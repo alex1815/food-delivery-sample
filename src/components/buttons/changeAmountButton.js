@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { MyButton } from "./button";
+import { MyButton } from "./touchableButton";
 
 const PLUS = " + ", MINUS = " - ";
 

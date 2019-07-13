@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { MyButton } from "./button";
+import React from "react";
+import { TouchableButton } from "./touchableButton";
 
 class ChangeDayButton extends React.Component {
 	constructor(props){
@@ -13,7 +13,7 @@ class ChangeDayButton extends React.Component {
 	}
 
 	render() {
-		return <MyButton onPress={this._calculateNextDay} title={this.props.title} />
+		return <TouchableButton onPress={this._calculateNextDay} title={this.props.title} />
 	}
 }
 
@@ -27,7 +27,11 @@ export class NextDayButton extends React.Component {
 	}
 
 	render() {
-		return <ChangeDayButton date={this.props.date} newDate={this.props.setNewDate} dayChangingFunc={this._dayChangingFunc} title="Вперёд" />
+		return <ChangeDayButton 
+			date={this.props.date} 
+			newDate={this.props.setNewDate} 
+			dayChangingFunc={this._dayChangingFunc} 
+			title="Вперёд" />
 	}
 }
 

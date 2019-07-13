@@ -1,6 +1,6 @@
 import {
   AppRegistry,
-} from 'react-native';
+} from "react-native";
 import { app } from "./src/pages/routing"
 
-AppRegistry.registerComponent('AwesomeProject', () => app);
+AppRegistry.registerComponent("FoodDeliveryProject", () => app);
