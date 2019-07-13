@@ -1,12 +1,12 @@
 import { FlexBlock } from "./flexBlock";
 import { BlockFoodDescription } from "./blockFoodDescription";
-import { MyButton } from "./buttons/button";
+import { TouchableButton } from "./buttons/touchableButton";
 import { DecreaseAmount, IncreaseAmount } from "./buttons/changeAmountButton";
 import { BackDayButton, NextDayButton } from "./buttons/changeDayButton";
 
 export { 
 	BlockFoodDescription,
-	MyButton,
+	TouchableButton,
 	DecreaseAmount,
 	IncreaseAmount,
 	BackDayButton, 

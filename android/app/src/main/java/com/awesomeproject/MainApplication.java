@@ -1,4 +1,4 @@
-package com.awesomeproject;
+package com.fooddeliveryproject;
 
 import android.app.Application;
 
