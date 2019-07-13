@@ -13,29 +13,23 @@ class ChangeDayButton extends React.Component {
 }
 
 export class NextDayButton extends React.Component {
-	changeDay(date, amount) {
-		return date + amount;
-	}
-
 	render() {
+		const { date, setNewDate } = this.props;
 		return <ChangeDayButton 
-			date={this.props.date} 
-			setNewDate={this.props.setNewDate} 
-			changeDay={this.changeDay} 
-			title="Вперёд" />
+			date={ date } 
+			setNewDate={ setNewDate } 
+			changeDay={ (date, amount) => date + amount } 
+			title="Next" />
 	}
 }
 
 export class BackDayButton extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	changeDay(date, amount) {
-		return date - amount;
-	}
-
 	render() {
-		return <ChangeDayButton date={this.props.date} setNewDate={this.props.setNewDate} changeDay={this.changeDay} title="Назад" />
+		const { date, setNewDate } = this.props;
+		return <ChangeDayButton 
+			date={ date }
+			setNewDate={ setNewDate }
+			changeDay={ (date, amount) => date - amount } 
+			title="Prev" />
 	}
 }

@@ -7,10 +7,6 @@ import {
   } from "react-native";
 
 export class TouchableButton extends React.Component {
-	constructor(props){
-		super(props);
-	}
-
 	render() {
 		const { style, onPress, title } = this.props;
 		return <TouchableHighlight>

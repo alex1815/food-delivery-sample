@@ -8,7 +8,7 @@ import {
 	ScrollView,
 } from 'react-native';
 
-import { MyButton, IncreaseAmount, DecreaseAmount, NextDayButton, BackDayButton, BlockFoodDescription } from "../components/exportCopmonents";
+import { TouchableButton, IncreaseAmount, DecreaseAmount, NextDayButton, BackDayButton, BlockFoodDescription } from "../components/exportCopmonents";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { findInPreaparingFoodsList } from "../helpers/helpers";
@@ -92,7 +92,7 @@ export class OrderFood extends React.Component {
 									sections={ this.state.foods }/>
 									<View>{
 										this._showButtonsForChangingAmount()
-										? <MyButton style={[styles.marginTop10]} onPress={this._orderFood} title={"Заказать"}/>
+										? <TouchableButton style={[styles.marginTop10]} onPress={this._orderFood} title={"Заказать"}/>
 										: null
 									}</View>
 								</View> 

@@ -11,7 +11,7 @@ import {
 
   import { NavigationActions } from 'react-navigation';
 
-import { BlockFoodDescription, MyButton, FlexBlock } from "../components/exportCopmonents";
+import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components/exportCopmonents";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { canChangeOrder, getCurrentDayInRussia } from "../helpers/helpers";
@@ -94,7 +94,7 @@ export class DeliveredToday extends React.Component {
 								/>
 								{
 									this.state.isManager
-										?<MyButton
+										?<TouchableButton
 										title={"Перейти ко всем заказам"}
 										onPress={this._navigateToAllOrders}
 										style={styles.shiftDown} />
@@ -103,7 +103,7 @@ export class DeliveredToday extends React.Component {
 								<View style={styles.shiftDown}>{
 									this.state.ready
 									? <Text style={[TEXT_STYLES.header]}>{ MESSAGE.FOOD_READY }</Text>
-									: <MyButton onPress={this._foodReady} title={ MESSAGE.FOOD_READY }/>
+									: <TouchableButton onPress={this._foodReady} title={ MESSAGE.FOOD_READY }/>
 								}</View>
 
 								<Text style={[TEXT_STYLES.header, styles.shiftDown]}>{`Заказ на неделю с ${MONDAY.getDate()} по ${FoodService.getSundayForOrder().getDate()}:`}</Text>
@@ -150,7 +150,7 @@ export class DeliveredToday extends React.Component {
 
 						<View>{
 							CAN_CHANGE_ORDER
-							? <MyButton
+							? <TouchableButton
 									title={"X"}
 									onPress={()=>this._showAcceptionOfDeleting(item)}
 									style={styles.removeButton} 
@@ -160,7 +160,7 @@ export class DeliveredToday extends React.Component {
 					</View>
 					<View>{
 							this.state.itemForDeleting && this.state.itemForDeleting === item
-							? <MyButton title={`Удалить заказ на ${item.name.toLowerCase()}?`} onPress={this._removeOrder}/>
+							? <TouchableButton title={`Удалить заказ на ${item.name.toLowerCase()}?`} onPress={this._removeOrder}/>
 							: null
 					}</View>
 				</View>);

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     StyleSheet,
     Button,
@@ -8,7 +8,7 @@ import {
 	AsyncStorage
 } from 'react-native';
 
-import { MyButton } from "../components/exportCopmonents";
+import { TouchableButton } from "../components/exportCopmonents";
 
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { ROUTES } from "../share/routesList";
@@ -85,7 +85,7 @@ export class AuthorizationScreen extends React.Component {
 			<Text>Пароль</Text>
 			<TextInput onChangeText={this._onChangePassword}/>
 
-			<MyButton
+			<TouchableButton
 				onPress={() => this._onLogin(this.state.name, this.state.password)}
 				title={this.state.messageOnButton}
 				style={styles.button}/>
