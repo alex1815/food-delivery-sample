@@ -2,35 +2,26 @@ import React from "react";
 import { TouchableButton } from "./touchableButton";
 
 class ChangeDayButton extends React.Component {
-	constructor(props){
-		super(props);
-
-		this._calculateNextDay = this._calculateNextDay.bind(this);
-	}
-
-	_calculateNextDay() {
-		return this.props.newDate(this.props.date.setDate( this.props.dayChangingFunc(this.props.date.getDate(), 1)));
+	calculateNextDate() {
+		const { setNewDate, changeDay, date } = this.props;
+		return setNewDate(date.setDate(changeDay(date.getDate(), 1)));
 	}
 
 	render() {
-		return <TouchableButton onPress={this._calculateNextDay} title={this.props.title} />
+		return <TouchableButton onPress={()=> this.calculateNextDate()} title={this.props.title} />
 	}
 }
 
 export class NextDayButton extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	_dayChangingFunc(date, amount) {
+	changeDay(date, amount) {
 		return date + amount;
 	}
 
 	render() {
 		return <ChangeDayButton 
 			date={this.props.date} 
-			newDate={this.props.setNewDate} 
-			dayChangingFunc={this._dayChangingFunc} 
+			setNewDate={this.props.setNewDate} 
+			changeDay={this.changeDay} 
 			title="Вперёд" />
 	}
 }
@@ -40,11 +31,11 @@ export class BackDayButton extends React.Component {
 		super(props);
 	}
 
-	_dayChangingFunc(date, amount) {
+	changeDay(date, amount) {
 		return date - amount;
 	}
 
 	render() {
-		return <ChangeDayButton date={this.props.date} newDate={this.props.setNewDate} dayChangingFunc={this._dayChangingFunc} title="Назад" />
+		return <ChangeDayButton date={this.props.date} setNewDate={this.props.setNewDate} changeDay={this.changeDay} title="Назад" />
 	}
 }
