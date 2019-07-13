@@ -1,0 +1,10 @@
+{
+	"foodTypes": [
+		{"name": "salat", "description": "Салаты"},
+		{"name": "soup", "description": "Супы"},
+		{"name": "second", "description": "Второе"},
+		{"name": "garnish", "description": "Гарнир"},
+		{"name": "drinkables", "description": "Напитки"},
+		{"name": "desserts", "description": "Десерты"}
+	]
+}
