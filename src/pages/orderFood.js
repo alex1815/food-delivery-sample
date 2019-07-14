@@ -1,320 +1,312 @@
 import React from "react";
 
 import {
-	StyleSheet,
-	Text,
-	View,
-	SectionList,
-	ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    SectionList,
+    ScrollView,
 } from "react-native";
 
 import { TouchableButton, IncreaseAmount, DecreaseAmount, NextDayButton, BackDayButton, BlockFoodDescription } from "../components";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
-import { findInPreaparingFoodsList } from "../helpers";
 import { FoodTypes, CurrentOrderItem } from "../models";
-import { mapInPreaparingFoodsList, canChangeOrder } from "../helpers";
+import { mapInPreparedFoodsList, canChangeOrder } from "../helpers";
 
 const STATE = {
-	LOADING_DATA: "Загрузка данных...",
-	LOADING_ORDER: "Отправка заказа",
-	LOADED_ORDER_SUCCESS: "Заказ успено отправлен!",
-	LOADING_ORDER_ERROR: "Ошибка отправки заказа! Повторите отправку",
-	DONE: ""
+    LOADING_DATA: "Loading...",
+    LOADING_ORDER: "Sending order",
+    LOADED_ORDER_SUCCESS: "Order was successfully sent!",
+    LOADING_ORDER_ERROR: "Error during sending. Please try again.",
+    DONE: ""
+};
+
+const MESSAGE = {
+    CURRENT_ORDER: "Current order",
+    PRICE: "Price of current order",
+    SEND_ORDER: "Order",
+    CAN_NOT_ORDER: "You can't order on this date"
 }
+
+const PAGE_TITLE = "Send order";
 
 const SECONDS_FOR_SHOWING_MESSAGE = 1.5;
 
 export class OrderFood extends React.Component {
-	static navigationOptions = {
-		title: "Сделать заказ"
-	}
+    static navigationOptions = {
+        title: PAGE_TITLE
+    }
 
-	constructor(props){
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this._setNewDate = this._setNewDate.bind(this);
-		this._getDataByDateFromState = this._getDataByDateFromState.bind(this);
-		this._updatedAmountForItem = this._updatedAmountForItem.bind(this);
-		this._renderListItem = this._renderListItem.bind(this);
-		this._orderFood = this._orderFood.bind(this);
+        this.state = {
+            message: STATE.LOADING_DATA,
+            foods: [],
+            date: new Date(),
+            changed: false,
+            currentOrder: [],
+            currentSum: 0,
+        };
+    }
 
-		this.state = {
-			message: STATE.LOADING_DATA,
-			foods: [],
-			date: new Date(),
-			changed: false,
-			currentOrder: [],
-			currentSum: 0,
-		};
-	}
+    componentDidMount() {
+        this.loadDataByDateFromState();
+    }
 
-	componentDidMount() {
-		this._loadDataByDateFromState();
-	}
+    componentWillReceiveProps(nextProps) {
+        const { params } = nextProps.navigation.state;
+        if (params && params.date && params.date != this.state.date) {
+            this.setState({ date: params.date }, this.loadDataByDateFromState);
+        }
+    }
 
-	componentWillReceiveProps (nextProps) {
-		if (nextProps.navigation.state.params
-			&& nextProps.navigation.state.params.date
-			&& nextProps.navigation.state.params.date != this.state.date) {
+    render() {
+        const { date, message, foods, currentOrder, currentSum } = this.state;
 
-			this.setState({ date: nextProps.navigation.state.params.date }, this._loadDataByDateFromState);
-		}
-	}
+        return (
+            <View style={ [ PAGE_STYLES.pageWithScrool ] }>
+                <ScrollView style={ [ PAGE_STYLES.scrollForPageWithScroll ] }>
+                    <View style={ [ styles.row, styles.elementsByCenter ] }>
+                        <BackDayButton
+                            date={ date }
+                            setNewDate={ (newDateMS) => this.setNewDate(newDateMS) } />
+                        <Text style={ [ TEXT_STYLES.header ] }>{ date.toDateString() }</Text>
+                        <NextDayButton
+                            date={ date }
+                            setNewDate={ (newDateMS) => this.setNewDate(newDateMS) } />
+                    </View>
+                    <View style={ [ styles.marginTop10 ] }>{
+                        message === STATE.DONE
+                            ? <View>{
+                                foods.length > 0
+                                    ? <View>
+                                        {
+                                            currentOrder.length > 0 &&
+                                            <View style={ styles.paddingBottom }>
+                                                <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CURRENT_ORDER }</Text>
+                                                <Text style={ [ TEXT_STYLES.header, styles.paddingLeft ] }>
+                                                    { currentOrder.map(({ name, amount }) => `${ name }(${ amount })`).join(", ") }
+                                                </Text>
+                                                <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.PRICE }</Text>
+                                                <Text style={ [ TEXT_STYLES.header, styles.paddingLeft ] }>{ `${ currentSum }р.` }</Text>
+                                            </View>
+                                        }
+                                        <View>{
+                                            this.showButtonsForChangingAmount() &&
+                                            <View>
+                                                <SectionList
+                                                    renderItem={ (internalItem) => this.renderListItem(internalItem) }
+                                                    renderSectionHeader={ (internalSection) => this.renderSectionHeader(internalSection) }
+                                                    sections={ foods } />
+                                                <TouchableButton style={ [ styles.marginTop10 ] } onPress={ () => this.orderFood() } title={ MESSAGE.SEND_ORDER } />
+                                            </View>
+                                        }</View>
+                                    </View>
+                                    : <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CAN_NOT_ORDER }</Text>
+                            }</View>
+                            : <Text style={ [ TEXT_STYLES.header ] }>{ message }</Text>
+                    }</View>
+                </ScrollView>
+            </View>
+        );
+    }
 
-	render(){
-		return (
-			<View style={[PAGE_STYLES.pageWithScrool]}>
-				<ScrollView style={[PAGE_STYLES.scrollForPageWithScroll]}>
-					<View style={[styles.row, styles.elementsByCenter]}>
-						<BackDayButton date={ this.state.date } setNewDate={this._setNewDate}/>
-						<Text style={[TEXT_STYLES.header]}>{`Еда на ${(this.state.date).toDateString()}`}</Text>
-						<NextDayButton date={this.state.date} setNewDate={this._setNewDate}/>
-					</View>
-					<View style={[styles.marginTop10]}>{
-						this.state.message == STATE.DONE
-						? <View>{
-							this.state.foods.length > 0
-							? <View>
-									{
-										this.state.currentOrder.length > 0
-										? <View style={styles.paddingBottom}>
-											<Text style={[TEXT_STYLES.header]}> Текущий заказ: </Text>
-											<Text style={[TEXT_STYLES.header, styles.paddingLeft]}>{this.state.currentOrder.map(({name, amount}) => {return `${name}(${amount})`;}).join(", ")}</Text> 
-											<Text style={[TEXT_STYLES.header]}> Сумма текущего заказа: </Text>
-											<Text style={[TEXT_STYLES.header, styles.paddingLeft]}>{`${this.state.currentSum}р.`}</Text>
-											</View>
-										: null
-									}
-									<SectionList
-									renderItem={this._renderListItem}
-									renderSectionHeader={this._renderSectionHeader}
-									sections={ this.state.foods }/>
-									<View>{
-										this._showButtonsForChangingAmount()
-										? <TouchableButton style={[styles.marginTop10]} onPress={this._orderFood} title={"Заказать"}/>
-										: null
-									}</View>
-								</View> 
-							: <Text style={[TEXT_STYLES.header]}>На этот день нельзя сделать заказ.</Text>
-						}</View>
-						: <Text style={[TEXT_STYLES.header]}>{this.state.message}</Text>
-					}</View>
-				</ScrollView>
-			</View>
-		);
-	}
+    renderSectionHeader({ section }) {
+        return <Text style={ [ TEXT_STYLES.subHeader ] }> { `${ section.title }:` } </Text>;
+    }
 
-	_renderSectionHeader({section}) {
-		return <Text style={[TEXT_STYLES.subHeader]}> {`${section.title}:`} </Text>;
-	}
+    renderListItem({ item }) {
+        const { name, description, cost, amount } = item;
+        return <View style={ [ styles.row, styles.listItem ] }>
+            <BlockFoodDescription
+                key={ name }
+                name={ name }
+                description={ description }
+                cost={ cost }
+                content
+                blockWidth={ styles.blockWidth } />
+            {
+                this.showButtonsForChangingAmount() &&
+                <View style={ [ styles.row, styles.buttonsWidth ] }>
+                    <IncreaseAmount value={ amount } setNewValue={ (newValue) => this.increaseAmount(item, newValue) } />
+                    <Text style={ [ TEXT_STYLES.header, styles.amountText ] }>
+                        { amount }
+                    </Text>
+                    <DecreaseAmount value={ amount } setNewValue={ (newValue) => this.decreaseAmount(item, newValue) } />
+                </View>
+            }
+        </View>
+    }
 
-	_renderListItem({item}) {
-		return <View style={[styles.row, {justifyContent:"center", alignItems: "center"}]}>
-					<BlockFoodDescription
-                        key={ item.name }
-						name={item.name} 
-						description={item.description} 
-						cost={item.cost}
-						content
-						blockWidth={styles.blockWidth}/>
-					{
-						this._showButtonsForChangingAmount()
-						? <View style={[styles.row, styles.buttonsWidth]}>
-							<IncreaseAmount value={item.amount} setNewValue={newValue => this._increaseAmount(item, newValue)}/>
-							<Text style={[TEXT_STYLES.header, styles.amountText]}>
-								{item.amount}
-							</Text>
-							<DecreaseAmount value={item.amount} setNewValue={newValue => this._decreaseAmount(item, newValue)}/>
-						</View>
-						: null
-					}
-					</View>
-	}
+    setNewDate(dateMS) {
+        this.setState({ date: new Date(dateMS) }, () => {
+            this.loadDataByDateFromState();
+        });
+    }
 
-	_setNewDate(dateMS) {
-		this.setState({ date: new Date(dateMS) }, () => {
-			this._loadDataByDateFromState();
-		});
-	}
+    async loadDataByDateFromState() {
+        const foods = await this.getDataByDateFromState();
+        this.generateCurrentOrder(foods);
+        this.setState({ foods }, () => this.setState({ message: STATE.DONE }));
+    }
 
-	async _loadDataByDateFromState() {
-		this.setState({ message: STATE.LOADING_DATA });
-		const result = await this._getDataByDateFromState();
-		this.setState({ foods: result }, () => this.setState({ message: STATE.DONE }));
-		this._generateCurrentOrder(result);
-	}
+    async getDataByDateFromState() {
+        this.setState({ message: STATE.LOADING_DATA });
 
-	async _getDataByDateFromState() {
-		this.setState({ message: STATE.LOADING_DATA });
+        const data = await FoodService.getByDate(this.state.date);
+        const preparedData = [];
 
-		const data = await FoodService.getByDate(this.state.date);
-		let preparingData = [];
-		const result = [];
-		
-		data && data.map((item) => {
-			let foundSection = false;
+        data && data.map((item) => {
+            const foundValue = preparedData.find(({ title }) => title === item.type);
+            if (foundValue) {
+                foundValue.data.push(item);
+            } else {
+                preparedData.push({ data: [ item ], title: item.type });
+            }
+        });
 
-			preparingData.map(( {data, title}, i ) => {
-				if (!foundSection && title == item.type) {
-					foundSection = true;
-					preparingData[i].data.push(item);
-					return;
-				}
-			});
+        const result = preparedData.map(({ data, title }) => {
+            const mappedTitle = FoodTypes.descriptions[ title ];
+            return { data, title: mappedTitle };
+        });
 
-			if (!foundSection) {
-				preparingData.push( {data: [item], title: item.type} );
-			}
-		});
-		preparingData.map(({data, title}) => {
-			const translatedTitle = FoodTypes.descriptions[title];
-			result.push({data, title: translatedTitle});
-		});
-		
-		return Promise.resolve(result);
-	}
+        return result;
+    }
 
-	async _increaseAmount(item, newValue) {
-		const increaseAmountIntoCurrentOrder = (foundItem, foundIndexOfItem, updatedCurrentOrder) => {
-			let costOfCurrentItem;
-			if (foundIndexOfItem > -1) {
-				foundItem.amount += 1;
-				costOfCurrentItem = foundItem.cost;
-			} else {
-				addItemToCurrentOrder(updatedCurrentOrder, foundIndexOfItem);
-				costOfCurrentItem = item.cost;
-			}
-			this.setState({ currentSum: this.state.currentSum + costOfCurrentItem });
-		};
+    async increaseAmount(item, newValue) {
+        const increaseAmountIntoCurrentOrder = (foundItem, foundIndexOfItem, updatedCurrentOrder) => {
+            let costOfCurrentItem;
+            if (foundIndexOfItem > -1) {
+                foundItem.amount += 1;
+                costOfCurrentItem = foundItem.cost;
+            } else {
+                const { id, name, cost } = item;
+                updatedCurrentOrder.push(new CurrentOrderItem({ id, name, amount: 1, cost }));
+                costOfCurrentItem = cost;
+            }
+            this.setState({ currentSum: this.state.currentSum + costOfCurrentItem });
+        };
 
-		const addItemToCurrentOrder = (updatedCurrentOrder) => {
-			updatedCurrentOrder.push(new CurrentOrderItem({id: item.id, name: item.name, amount: item.amount, cost: item.cost}));
-		};
+        this.changeAmountIntoCurrentOrder(item, increaseAmountIntoCurrentOrder);
+        this.updatedAmountForItem(item, newValue);
+    }
 
-		await this._updatedAmountForItem(item, newValue);
-		this._changeAmountIntoCurrentOrder(item, increaseAmountIntoCurrentOrder, addItemToCurrentOrder);
-	}
+    decreaseAmount(item, newValue) {
+        const decreaseAmountIntoCurrentOrder = (foundItem, foundIndexOfItem, updatedCurrentOrder) => {
+            if (foundIndexOfItem > -1) {
+                if (foundItem.amount == 1) {
+                    updatedCurrentOrder.splice(foundIndexOfItem, 1);
+                } else {
+                    foundItem.amount -= 1;
+                }
+                this.setState({ currentSum: this.state.currentSum - foundItem.cost });
+            }
+        };
 
-	_decreaseAmount(item, newValue) {
-		const decreaseAmountIntoCurrentOrder = (foundItem, foundIndexOfItem, updatedCurrentOrder) => {			
-			if (foundIndexOfItem > -1) {
-				if (foundItem.amount == 1) {
-					removeItemFromCurrentOrder(updatedCurrentOrder, foundIndexOfItem);
-				} else {
-					foundItem.amount -= 1;
-				}
-				this.setState({ currentSum: this.state.currentSum - foundItem.cost });
-			}
-		};
+        this.changeAmountIntoCurrentOrder(item, decreaseAmountIntoCurrentOrder);
+        item.amount > 0 && this.updatedAmountForItem(item, newValue);
+    }
 
-		const removeItemFromCurrentOrder = (updatedCurrentOrder, foundIndexOfItem) => {
-			updatedCurrentOrder.splice(foundIndexOfItem, 1);
-		};
+    updatedAmountForItem(itemForUpdate, newAmount) {
+        const foods = this.state.foods.slice();
 
-		this._changeAmountIntoCurrentOrder(item, decreaseAmountIntoCurrentOrder, removeItemFromCurrentOrder);
+        foods.filter(({ data }, j) => {
+            return data.filter((item, i) => {
+                if (item == itemForUpdate) {
+                    foods[ j ].data[ i ].amount = newAmount;
+                    return true;
+                }
+                return false;
+            });
+        });
 
-		if (item.amount > 0) {
-			this._updatedAmountForItem(item, newValue);
-		}
-	}
-	
-	_updatedAmountForItem(itemForUpdate, newAmount) {
-		let newData;
-		const callback = ((item, i, data, j) => {
-			if (item == itemForUpdate) {
-				newData = Object.assign([], this.state.foods);
-				newData[j].data[i].amount = newAmount;
-				
-				return true;
-			}
-		});
+        this.setState({ foods });
+    }
 
-		findInPreaparingFoodsList(this.state.foods, callback);
+    async orderFood() {
+        const { foods, date } = this.state;
+        this.setState({ message: STATE.LOADING_ORDER });
 
-		return new Promise( (resolve, reject) => {
-			this.setState({foods: newData}, 
-				() => resolve()
-			);
-		});
-	}
-
-	async _orderFood () {
-		this.setState({ message: STATE.LOADING_ORDER });
-
-        const result = await FoodService.orderFood(this.state.foods, this.state.date);
+        const result = await FoodService.orderFood(foods, date);
         // here we can add some logger for keeping data about errors \ handle this in more clear way
-		this._showTemporaryMessage(result.error ?  STATE.LOADING_ORDER_ERROR : STATE.LOADED_ORDER_SUCCESS);
-	}
+        this.showTemporaryMessage(result.error ? STATE.LOADING_ORDER_ERROR : STATE.LOADED_ORDER_SUCCESS);
+    }
 
-	_showTemporaryMessage(text, time = SECONDS_FOR_SHOWING_MESSAGE) {
-		let self = this;
-		this.setState({ message: text});
-		setTimeout(() => {
-			 self.setState({ message: STATE.DONE });
-		}, time * 1000);
-	}
+    showTemporaryMessage(text, time = SECONDS_FOR_SHOWING_MESSAGE) {
+        let self = this;
+        this.setState({ message: text });
+        setTimeout(() => {
+            self.setState({ message: STATE.DONE });
+        }, time * 1000);
+    }
 
-	_changeAmountIntoCurrentOrder(item, changeAmountFunc, operationWithArray) {
-		const foundIndexOfItem = this._findIntoCurrentOrder(item);
-		const updatedCurrentOrder = Object.assign([], this.state.currentOrder);
+    changeAmountIntoCurrentOrder(item, changeAmountFunc) {
+        const foundIndexOfItem = this.findIntoCurrentOrder(item);
+        const updatedCurrentOrder = this.state.currentOrder.slice();
 
-		let foundItem = updatedCurrentOrder[foundIndexOfItem];
-		changeAmountFunc(foundItem, foundIndexOfItem, updatedCurrentOrder);
-		
-		this.setState({ currentOrder: updatedCurrentOrder });
-	}
+        if (foundIndexOfItem > -1) {
+            let foundItem = updatedCurrentOrder[ foundIndexOfItem ];
+            changeAmountFunc(foundItem, foundIndexOfItem, updatedCurrentOrder);
+        } else {
+            changeAmountFunc(null, foundIndexOfItem, updatedCurrentOrder);
+        }
 
-	_findIntoCurrentOrder(item) {
-		return this.state.currentOrder.findIndex( ({name, amount}) => {
-			return name === item.name;
-		});
-	}
+        this.setState({ currentOrder: updatedCurrentOrder });
+    }
 
-	_generateCurrentOrder(newOrder) {
-		const newCurrentOrder = [];
-		let currentItems = [];
-		let currentSum = 0;
-		const getItems = (item) => {
-			if (item.amount > 0) {
-				newCurrentOrder.push(new CurrentOrderItem({id: item.id, name: item.name, amount: item.amount, cost: item.cost }));
-				currentSum += item.cost;
-			}
-		};
+    findIntoCurrentOrder(item) {
+        return this.state.currentOrder.findIndex(({ name }) => name === item.name);
+    }
 
-		mapInPreaparingFoodsList(newOrder, getItems);
-		this.setState({ currentOrder: newCurrentOrder, currentSum: currentSum });
-	}
+    generateCurrentOrder(newOrder) {
+        const newCurrentOrder = [];
+        let currentSum = 0;
+        const getItems = ({ id, name, amount, cost }) => {
+            if (amount > 0) {
+                newCurrentOrder.push(new CurrentOrderItem({ id, name, amount, cost }));
+                currentSum += cost * amount;
+            }
+        };
 
-	_showButtonsForChangingAmount() {
-		return canChangeOrder(this.state.date);
-	}
+        mapInPreparedFoodsList(newOrder, getItems);
+        this.setState({ currentOrder: newCurrentOrder, currentSum });
+    }
+
+    showButtonsForChangingAmount() {
+        return canChangeOrder(this.state.date);
+    }
 }
 
 const styles = StyleSheet.create({
-	row: {
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	elementsByCenter: {
-		justifyContent: "space-between",
-	},
-	marginTop10: {
-		marginTop: 10,
-	},
-	blockWidth: {
-		width: "75%"
-	},
-	buttonsWidth: {
-		width: "20%"
-	},
-	amountText: {
-		margin: 3
-	},
-	paddingLeft: {
-		paddingLeft: 10,
-	},
-	paddingBottom: {
-		paddingBottom: 10,
-	}
+    row: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    listItem: {
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    elementsByCenter: {
+        justifyContent: "space-between",
+    },
+    marginTop10: {
+        marginTop: 10,
+    },
+    blockWidth: {
+        width: "75%"
+    },
+    buttonsWidth: {
+        width: "20%"
+    },
+    amountText: {
+        margin: 3
+    },
+    paddingLeft: {
+        paddingLeft: 10,
+    },
+    paddingBottom: {
+        paddingBottom: 10,
+    }
 });

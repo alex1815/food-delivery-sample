@@ -1,6 +1,6 @@
 import { FoodTypes } from "../models/foodTypes";
 import { Food } from "../models/food";
-import { mapInPreaparingFoodsList, getMonday, getSunday, getCurrentDayInRussia } from "../helpers";
+import { mapInPreparedFoodsList, getMonday, getSunday, getCurrentDayInRussia } from "../helpers";
 import { SERVER } from "../server/server";
 
 export class FoodService {
@@ -34,7 +34,7 @@ export class FoodService {
 			if (item.amount > 0) return { id: item.id, amount: item.amount };
 		});
 
-		const preparedDataForServer = mapInPreaparingFoodsList(foods, func);
+		const preparedDataForServer = mapInPreparedFoodsList(foods, func);
 
 		return await SERVER.newOrder( {date, data: preparedDataForServer} );
 	}

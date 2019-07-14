@@ -1,9 +1,9 @@
-import { findInPreaparingFoodsList, mapInPreaparingFoodsList } from "./dataMapper";
+import { mapInPreparedFoodsList } from "./dataMapper";
 import { canChangeOrder, getCurrentDayInRussia, getMonday, getSunday, NAMES_OF_DAYS, generateListOfDays } from "./date";
 import { weightToString } from "./food";
 
 export { 
-	findInPreaparingFoodsList, mapInPreaparingFoodsList,
+	mapInPreparedFoodsList,
     canChangeOrder, getCurrentDayInRussia, getMonday, getSunday, NAMES_OF_DAYS, generateListOfDays,
     weightToString,
 };

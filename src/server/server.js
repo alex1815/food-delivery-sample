@@ -7,10 +7,12 @@ export class SERVER {
     static async newOrder(data) {
         // return request(REQUEST_TYPE.post, "newOrder", {data});
         return new Promise((resolve, reject) => {
-            resolve({
-                error: null,
-                data
-            });
+            setTimeout( () => {
+                resolve({
+                    error: null,
+                    data
+                });
+            }, 1000);
         });
     }
 
@@ -109,7 +111,7 @@ const mockDataFromServer = {
                     amount: 1
                 },
                 {
-                    name: "First 1",
+                    name: "Second 1",
                     cost: 2,
                     type: FoodTypes.second,
                     weight: 2,
@@ -133,7 +135,8 @@ const mockDataFromServer = {
                     cost: 30,
                     type: FoodTypes.salad,
                     description: "smt brilliant",
-                    weight: 350
+                    weight: 350,
+                    amount: 0
                 },
                 {
                     name: "Salad 1",
