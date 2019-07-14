@@ -36,8 +36,7 @@ export class FoodService {
 
 		const preparedDataForServer = mapInPreaparingFoodsList(foods, func);
 
-		result = await SERVER.newOrder( {date, data: preparedDataForServer} );
-		return !!result;
+		return await SERVER.newOrder( {date, data: preparedDataForServer} );
 	}
 
 	static async foodsReady() {

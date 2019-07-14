@@ -242,8 +242,9 @@ export class OrderFood extends React.Component {
 	async _orderFood () {
 		this.setState({ message: STATE.LOADING_ORDER });
 
-		error = await FoodService.orderFood(this.state.foods, this.state.date)
-		this._showTemporaryMessage(error ?  STATE.LOADING_ORDER_ERROR : STATE.LOADED_ORDER_SUCCESS);
+        const result = await FoodService.orderFood(this.state.foods, this.state.date);
+        // here we can add some logger for keeping data about errors \ handle this in more clear way
+		this._showTemporaryMessage(result.error ?  STATE.LOADING_ORDER_ERROR : STATE.LOADED_ORDER_SUCCESS);
 	}
 
 	_showTemporaryMessage(text, time = SECONDS_FOR_SHOWING_MESSAGE) {

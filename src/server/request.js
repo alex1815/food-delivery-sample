@@ -1,6 +1,7 @@
 import { SERVER_PATH } from "./config";
 import { REQUEST_TYPE } from "./requestTypes";
 
+// all calls should be mocked, don't use request
 export async function request(type = REQUEST_TYPE.get, endpoint, body={}, headers) {
 	const requestParams = {
 		method: type,
