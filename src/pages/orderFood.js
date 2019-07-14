@@ -111,7 +111,8 @@ export class OrderFood extends React.Component {
 
 	_renderListItem({item}) {
 		return <View style={[styles.row, {justifyContent:"center", alignItems: "center"}]}>
-					<BlockFoodDescription 
+					<BlockFoodDescription
+                        key={ item.name }
 						name={item.name} 
 						description={item.description} 
 						cost={item.cost}

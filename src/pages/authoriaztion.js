@@ -10,7 +10,7 @@ import {
 import { TouchableButton } from "../components";
 
 import { PAGE_STYLES } from "../share/styles";
-import { ROUTES } from "../router/routesList";
+import { ROUTES } from "../router/routes";
 
 import { request } from "../server/request";
 import { REQUEST_TYPE } from "../server/requestTypes";

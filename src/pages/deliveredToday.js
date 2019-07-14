@@ -17,7 +17,7 @@ import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { canChangeOrder, generateListOfDays } from "../helpers";
 
 import { RoleService } from "../services/roleService";
-import { ROUTES } from "../router/routesList";
+import { ROUTES } from "../router/routes";
 
 const MESSAGE = {
     FOOD_IS_READY: "Food is here!",
@@ -122,6 +122,7 @@ export class DeliveredToday extends React.Component {
 
     renderListItem({ item }) {
         return (<BlockFoodDescription
+            key={ item.name }
             name={ item.name }
             key={ `${item.name}-${item.description}` }
             description={ item.description }
@@ -130,7 +131,7 @@ export class DeliveredToday extends React.Component {
 
     renderListOfDays({ item }) {
         const isCanChangeOrder = item.description === DAYS_DESCRIPTION.ORDERED && canChangeOrder(item.date);
-        return (<View key={ `${item.name}-${item.description}` }>
+        return (<View key={ item.name }>
             <View style={ [ styles.flex ] }>
 
                 <TouchableHighlight onPress={ () => this.orderFoodOnDay(item) }>

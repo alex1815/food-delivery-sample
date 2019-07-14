@@ -49,8 +49,8 @@ export class ManagerScreen extends React.Component {
     }
 
     renderListUsers({ item }) {
-        return (<View>
-            <Text style={ TEXT_STYLES.header }>{ `${ item.name } (${ item.costOnWeek }р.)` }</Text>
+        return (<View key={ item.name }>
+            <Text style={ TEXT_STYLES.header }>{ `${ item.name } (${ item.costOnWeek }р)` }</Text>
             <FlatList
                 data={ item.order }
                 renderItem={ (internalItem) => this.renderListItems(internalItem) }
@@ -59,7 +59,7 @@ export class ManagerScreen extends React.Component {
     }
 
     renderListItems({ item }) {
-        return (<View>
+        return (<View key={ item.date }>
             <Text>{ (item.date).toDateString() }</Text>
             <FlatList
                 data={ item.foods }
@@ -70,6 +70,7 @@ export class ManagerScreen extends React.Component {
 
     renderFoodsList({ item }) {
         return (<BlockFoodDescription
+            key={ item.name }
             name={ item.name }
             description={ item.description }
             amount={ item.amount }
