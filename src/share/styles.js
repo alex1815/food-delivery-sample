@@ -1,6 +1,6 @@
 import {
-	StyleSheet,
-  } from "react-native";
+    StyleSheet,
+} from "react-native";
 
 const PADDING = 20;
 const PAGE = {
@@ -15,10 +15,10 @@ const PAGE = {
 export const PAGE_STYLES = StyleSheet.create({
     page: PAGE,
     pageWithScrool: {
-        ...PAGE, 
+        ...PAGE,
         padding: 0,
         paddingLeft: PADDING,
-        paddingTop: PADDING, 
+        paddingTop: PADDING,
         paddingBottom: PADDING,
     },
     scrollForPageWithScroll: {

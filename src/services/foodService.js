@@ -4,76 +4,80 @@ import { mapInPreparedFoodsList, getMonday, getSunday, getCurrentDayInRussia } f
 import { SERVER } from "../server/server";
 
 export class FoodService {
-	static getOnWeek () {
-		return mockDataFromServer;
-	}
+    static async getOnWeek() {
+        const res = await SERVER.getByDate(new Date());
+        return res && res.foods ? res.foods : [];
+    }
 
-	static async getByDate(date = new Date()) {
-		 const foodsByDate = await SERVER.getByDate(date);
+    static async getByDate(date = new Date()) {
+        const foodsByDate = await SERVER.getByDate(date);
 
-		 return foodsByDate && foodsByDate.foods ? foodsByDate.foods : [];
-	}
+        return foodsByDate && foodsByDate.foods ? foodsByDate.foods : [];
+    }
 
-	static async getMyOrderByDate(date = new Date()) {
-		const myOrderByDate = await SERVER.getMyOrderByDate(date);
-		
-		return myOrderByDate && myOrderByDate.foods ? myOrderByDate.foods : [];
-	}
+    static async getMyOrderByDate(date = new Date()) {
+        const myOrderByDate = await SERVER.getMyOrderByDate(date);
 
-	static async getMyOrderOnWeek() {
-		const mondayForOrder = FoodService.getMondayForOrder();
-		const sundayForOrder = FoodService.getSundayForOrder();
-		
-		const myOrderOnWeek = await SERVER.getMyOrderOnWeek(mondayForOrder, sundayForOrder);
-		
-		return myOrderOnWeek ? myOrderOnWeek : [];
-	}
+        return myOrderByDate && myOrderByDate.foods ? myOrderByDate.foods : [];
+    }
 
-	static async orderFood(foods, date) {
-		const func = ( (item, i) => {
-			if (item.amount > 0) return { id: item.id, amount: item.amount };
-		});
+    static async getMyOrdersOnWeek() {
+        const mondayForOrder = FoodService.getMondayForOrder();
+        const sundayForOrder = FoodService.getSundayForOrder();
 
-		const preparedDataForServer = mapInPreparedFoodsList(foods, func);
+        const myOrdersOnWeek = await SERVER.getMyOrdersOnWeek(mondayForOrder, sundayForOrder);
 
-		return await SERVER.newOrder( {date, data: preparedDataForServer} );
-	}
+        return myOrdersOnWeek ? myOrdersOnWeek : [];
+    }
 
-	static async foodsReady() {
-		 return SERVER.foodsReady();
-	}
+    static async orderFood(foods, date) {
+        const prepareFunc = ((item, i) => {
+            const { amount, id } = item;
+            if (amount > 0) {
+                return { id, amount };
+            }
+        });
 
-	static getMySumOfOrderOnWeek() {
-		 return SERVER.getSumOfOrderOnWeek();
-	}
+        const preparedDataForServer = mapInPreparedFoodsList(foods, prepareFunc);
 
-	static async cancelOrder(date) {
-		 return SERVER.cancelOrder(date);
-	 }
+        return await SERVER.newOrder({ date, data: preparedDataForServer });
+    }
 
-	static async getAllOrdersOnWeek() {
-		 return SERVER.getAllOrdersOnWeek();
-	}
+    static async foodsReady() {
+        return SERVER.foodsReady();
+    }
 
-	static getMondayForOrder () {
-		return getMonday(FoodService.getDateOnWeekForOrder());
-	}
+    static getMySumOfOrderOnWeek() {
+        return SERVER.getSumOfOrderOnWeek();
+    }
 
-	static getSundayForOrder () {
-		return getSunday(FoodService.getDateOnWeekForOrder());
-	}
+    static async cancelOrder(date) {
+        return SERVER.cancelOrder(date);
+    }
 
-	static getDateOnWeekForOrder () {
-		const currentDate = new Date();
+    static async getAllOrdersOnWeek() {
+        return SERVER.getAllOrdersOnWeek();
+    }
 
-		if (getCurrentDayInRussia(currentDate.getDay()) < 5) {
-			return currentDate;
-		} else {
-			return new Date((new Date()).setDate(currentDate.getDate() + 6 ));
-		}
-	}
+    static getMondayForOrder() {
+        return getMonday(FoodService.getDateOnWeekForOrder());
+    }
+
+    static getSundayForOrder() {
+        return getSunday(FoodService.getDateOnWeekForOrder());
+    }
+
+    static getDateOnWeekForOrder() {
+        const currentDate = new Date();
+
+        if (getCurrentDayInRussia(currentDate.getDay()) < 5) {
+            return currentDate;
+        } else {
+            return (new Date()).setDate(currentDate.getDate() + 6);
+        }
+    }
 }
 
-Date.prototype.equalDate = function(date) {
-	return date && this.getDate() === date.getDate() && this.getMonth() === date.getMonth() && this.getFullYear() === date.getFullYear();
+Date.prototype.equalDate = function (date) {
+    return date && this.getDate() === date.getDate() && this.getMonth() === date.getMonth() && this.getFullYear() === date.getFullYear();
 }

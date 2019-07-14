@@ -89,6 +89,7 @@ export class AuthorizationScreen extends React.Component {
 
         // TODO remove it, we haven't authorization yet
         this.props.navigation.navigate(ROUTES.TABS);
+        return;
 
         request(REQUEST_TYPE.post, "authorization", { login, password })
             .then((response) => {

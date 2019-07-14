@@ -164,7 +164,7 @@ export class DeliveredToday extends React.Component {
     }
 
     async getListOfDays() {
-        const foodsOnWeek = await FoodService.getMyOrderOnWeek();
+        const foodsOnWeek = await FoodService.getMyOrdersOnWeek();
         const res = [];
         LIST_OF_DAYS.map(({ day, name, date }) => {
             const isFound = foodsOnWeek.find((dateAndFood) => {

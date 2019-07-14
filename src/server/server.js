@@ -1,4 +1,4 @@
-import { Food, FoodTypes, ROLES } from "../models";
+import { FoodTypes, ROLES } from "../models";
 
 import { request } from "./request";
 import { REQUEST_TYPE } from "./requestTypes";
@@ -7,7 +7,7 @@ export class SERVER {
     static async newOrder(data) {
         // return request(REQUEST_TYPE.post, "newOrder", {data});
         return new Promise((resolve, reject) => {
-            setTimeout( () => {
+            setTimeout(() => {
                 resolve({
                     error: null,
                     data
@@ -23,23 +23,24 @@ export class SERVER {
             return item.date.equalDate(date);
         });
 
-        return foodsByDate;
+        return new Promise((resolve, reject) => {
+            resolve(foodsByDate)
+        });
     }
 
     static async getMyOrderByDate(date) {
         //return request(REQUEST_TYPE.get, "getMyOrder/" + date);
+        const myOrderByDate = mockDataFromServer.myOrders.find((item) => {
+            return item.date.equalDate(date);
+        });
 
         return new Promise((resolve, reject) => {
-            const myOrderByDate = mockDataFromServer.myOrders.find((item) => {
-                return item.date.equalDate(date);
-            });
-
             resolve(myOrderByDate);
         });
     }
 
-    static async getMyOrderOnWeek(firstDay, lastDay) {
-        //return request(REQUEST_TYPE.get, `$getMyOrderOnWeek/{firstDay}/{lastDay}`);
+    static async getMyOrdersOnWeek(firstDay, lastDay) {
+        //return request(REQUEST_TYPE.get, `$getMyOrdersOnWeek/{firstDay}/{lastDay}`);
         return new Promise((resolve, reject) => {
             resolve(mockDataFromServer.myOrders);
         });
@@ -72,11 +73,9 @@ export class SERVER {
     }
 
     static getAllOrdersOnWeek() {
-        // server should check that is request from manager
+        // server should check that request is from manager
         //return request(REQUEST_TYPE.get, "getAllOrdersOnWeek");
         return new Promise((resolve, reject) => {
-            //resolve(ROLES.USER);
-            // предполагается, что хранится типо { id: myId, orders: [{date: 1, foods: []}, {date:2, foods: []}] }
             resolve(mockDataFromServer.allOrders);
         });
     }
@@ -282,7 +281,7 @@ const mockDataFromServer = {
                             name: "Soup 3",
                             cost: 3,
                             type: FoodTypes.first,
-                            description: "just soup, it's but not so bad.",
+                            description: "just soup, but it's not so bad.",
                             weight: 200,
                             amount: 2
                         },
