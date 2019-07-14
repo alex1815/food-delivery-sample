@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from "react-native";
 
 export class FlexBlock extends React.Component {
     render() {
@@ -31,15 +31,15 @@ const styles = StyleSheet.create({
     },
     block: {
         flexDirection: "row",
-        justifyContent: 'center',
+        justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#ffffff',
+        backgroundColor: "#ffffff",
         paddingTop: SMALL_PADDING,
         paddingBottom: SMALL_PADDING,
         margin: 5,
         borderRadius: 4,
         borderWidth: 0.5,
-        borderColor: '#d6d7da',
+        borderColor: "#d6d7da",
     },
     contentBlock: {
         width: "100%",

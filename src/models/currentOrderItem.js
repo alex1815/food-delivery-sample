@@ -1,19 +1,24 @@
+import { weightToString } from "../helpers";
+
 export class CurrentOrderItem {
-	constructor({id, name, cost, amount, description})
-	{
-		this.id = id;
-		this.name = name;
-		this.cost = cost;
-		this.amount = amount || 0;
+    id;
+    name;
+    cost;
+    amount;
+    description;
 
-		if (this.description)
-		{
-		 	this.description = this.description.toLowerCase();
-		}	
-	}
+    constructor({ id, name, cost, amount, description }) {
+        this.id = id;
+        this.name = name;
+        this.cost = cost;
+        this.amount = amount || 0;
 
-	weightToString()
-	{
-		return this.weight = this.weight ? this.weight + " грамм" : "";
-	}
+        if (description) {
+            this.description = this.description.toLowerCase();
+        }
+    }
+
+    weightToString() {
+        return weightToString(this.weight);
+    }
 }

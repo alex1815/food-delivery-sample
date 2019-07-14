@@ -1,4 +1,4 @@
-import { ROLES } from "../models/exportModels";
+import { ROLES } from "../models";
 import { SERVER } from "../server/server";
 
 export class RoleService {

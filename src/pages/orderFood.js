@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
 	StyleSheet,
@@ -6,13 +6,13 @@ import {
 	View,
 	SectionList,
 	ScrollView,
-} from 'react-native';
+} from "react-native";
 
 import { TouchableButton, IncreaseAmount, DecreaseAmount, NextDayButton, BackDayButton, BlockFoodDescription } from "../components";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { findInPreaparingFoodsList } from "../helpers";
-import { FoodTypes, CurrentOrderItem } from "../models/exportModels";
+import { FoodTypes, CurrentOrderItem } from "../models";
 import { mapInPreaparingFoodsList, canChangeOrder } from "../helpers";
 
 const STATE = {

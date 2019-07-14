@@ -1,10 +1,28 @@
 {
-	"foodTypes": [
-		{"name": "salat", "description": "Салаты"},
-		{"name": "soup", "description": "Супы"},
-		{"name": "second", "description": "Второе"},
-		{"name": "garnish", "description": "Гарнир"},
-		{"name": "drinkables", "description": "Напитки"},
-		{"name": "desserts", "description": "Десерты"}
-	]
+    "foodTypes": [
+        {
+            "name": "salad",
+            "description": "Salads"
+        },
+        {
+            "name": "first",
+            "description": "Main course"
+        },
+        {
+            "name": "second",
+            "description": "Second course"
+        },
+        {
+            "name": "garnish",
+            "description": "Garnish"
+        },
+        {
+            "name": "drinkables",
+            "description": "Drinks"
+        },
+        {
+            "name": "desserts",
+            "description": "Deserts"
+        }
+    ]
 }

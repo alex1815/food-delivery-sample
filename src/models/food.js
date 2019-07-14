@@ -1,33 +1,29 @@
-class IFood {
-	id;
-	name;
-	description;
-	cost;
-	type;
-	weight;
-	amount;
-}
+import { weightToString } from "../helpers";
 
-export class Food extends IFood {
-	constructor({id, name, cost, type, description, weight, amount})
-	{
-		super();
-		this.id = id;
-		this.name = name;
-		this.cost = cost;
-		this.type = type;
-		this.description = description;
-		this.weight = weight;
-		this.amount = amount || 0;
+export class Food {
+    id;
+    name;
+    cost;
+    type;
+    description;
+    weight;
+    amount;
 
-		if (this.description)
-		{
-		 	this.description = this.description.toLowerCase();
-		}	
-	}
+    constructor({ id, name, cost, type, description, weight, amount }) {
+        this.id = id;
+        this.name = name;
+        this.cost = cost;
+        this.type = type;
+        this.description = description;
+        this.weight = weight;
+        this.amount = amount || 0;
 
-	weightToString()
-	{
-		return this.weight = this.weight ? this.weight + " грамм" : "";
-	}
+        if (this.description) {
+            this.description = this.description.toLowerCase();
+        }
+    }
+
+    weightToString() {
+        return weightToString(this.weight);
+    }
 }

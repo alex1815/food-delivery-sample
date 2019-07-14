@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
 	StyleSheet,
@@ -7,9 +7,9 @@ import {
 	FlatList,
 	ScrollView,
 	TouchableHighlight,
-  } from 'react-native';
+  } from "react-native";
 
-  import { NavigationActions } from 'react-navigation';
+  import { NavigationActions } from "react-navigation";
 
 import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components";
 import { FoodService } from "../services/foodService";

@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-
 import {
   TabNavigator,
   StackNavigator,
-} from 'react-navigation';
+} from "react-navigation";
 
 import { ROUTES } from "../share/routesList";
 

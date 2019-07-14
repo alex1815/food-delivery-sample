@@ -15,7 +15,7 @@ export function getCurrentDayInRussia(day) {
 }
 
 export function getMonday(d) {
-	d = typeof d === 'number'
+	d = typeof d === "number"
 		? new Date(d)
 		: d;
 	let day = d.getDay(),
@@ -24,7 +24,7 @@ export function getMonday(d) {
 }
 
 export function getSunday(d) {
-	d = typeof d === 'number'
+	d = typeof d === "number"
 		? new Date(d)
 		: d;
 	let day = d.getDay(),

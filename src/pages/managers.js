@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from "react";
 import {
     StyleSheet,
     Text,
     View,
 	FlatList,
 	ScrollView,
-} from 'react-native';
+} from "react-native";
 
 import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
@@ -82,7 +82,7 @@ export class ManagerScreen extends React.Component {
 const styles = StyleSheet.create({
 	title: {
 	  fontSize: 30,
-	  alignSelf: 'center',
+	  alignSelf: "center",
 	  marginBottom: 50
 	},
 });

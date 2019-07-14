@@ -1,12 +1,12 @@
 import {
 	StyleSheet,
-  } from 'react-native';
+  } from "react-native";
 
 const PADDING = 20;
 const PAGE = {
     display: "flex",
     padding: PADDING,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     position: "absolute",
     height: "100%",
     width: "100%",

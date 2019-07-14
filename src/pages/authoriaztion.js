@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
     StyleSheet,
     Button,
@@ -6,15 +6,15 @@ import {
     View,
     TextInput,
 	AsyncStorage
-} from 'react-native';
+} from "react-native";
 
 import { TouchableButton } from "../components";
 
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { ROUTES } from "../share/routesList";
-import { ROLES } from "../models/exportModels";
+import { ROLES } from "../models";
 
-import { request } from '../server/request';
+import { request } from "../server/request";
 import { REQUEST_TYPE } from "../server/requestTypes";
 
 const MESSAGES_ON_BUTTON = {
@@ -133,18 +133,18 @@ export class AuthorizationScreen extends React.Component {
 const styles = StyleSheet.create({
 	title: {
 	  fontSize: 30,
-	  alignSelf: 'center',
+	  alignSelf: "center",
 	  marginBottom: 30
 	},
 	button: {
-	  backgroundColor: '#48BBEC',
-	  borderColor: '#48BBEC',
+	  backgroundColor: "#48BBEC",
+	  borderColor: "#48BBEC",
 	  borderWidth: 1,
 		borderRadius: 8,
 		marginTop: 20,
 	  marginBottom: 10,
-	  alignSelf: 'stretch',
-		justifyContent: 'center',
+	  alignSelf: "stretch",
+		justifyContent: "center",
 	},
 });
   

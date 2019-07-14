@@ -1,4 +1,4 @@
-import { Food, FoodTypes, ROLES } from "../models/exportModels";
+import { Food, FoodTypes, ROLES } from "../models";
 
 import { request } from "./request";
 import { REQUEST_TYPE } from "./requestTypes";
@@ -78,19 +78,19 @@ const mockDataFromServer = {
 		{
 			date: new Date(),
 			foods: [
-				new Food({name: "Цезарь", cost: 35, type: FoodTypes.salat, description: "курица, гренки", weight: 200}),
+				new Food({name: "Цезарь", cost: 35, type: FoodTypes.salad, description: "курица, гренки", weight: 200}),
 				{
-					name: "salat 1",
+					name: "salad 1",
 					cost: 100,
-					type: FoodTypes.salat,
+					type: FoodTypes.salad,
 					description: "decription",
 					weight: 1,
 					amount: 0
 				},
 				{
-					name: "salat 2",
+					name: "salad 2",
 					cost: 2,
-					type: FoodTypes.salat,
+					type: FoodTypes.salad,
 					description: "decription 2",
 					weight: 2,
 					amount: 1
@@ -105,7 +105,7 @@ const mockDataFromServer = {
 				{
 					name: "first 2",
 					cost: 3,
-					type: FoodTypes.soup,
+					type: FoodTypes.first,
 					description: "first decription 2",
 					weight: 3,
 					amount: 0
@@ -115,19 +115,19 @@ const mockDataFromServer = {
 		{
 			date: new Date((new Date()).setDate( (new Date()).getDate() + 1 )),
 			foods: [
-				new Food({name: "Венеция", cost: 30, type: FoodTypes.salat, description: "что-то, новое", weight: 350}),,
+				new Food({name: "Венеция", cost: 30, type: FoodTypes.salad, description: "что-то, новое", weight: 350}),,
 				{
-					name: "salat 1",
+					name: "salad 1",
 					cost: 100,
-					type: FoodTypes.salat,
+					type: FoodTypes.salad,
 					description: "decription",
 					weight: 1,
 					amount: 0
 				},
 				{
-					name: "salat 2",
+					name: "salad 2",
 					cost: 2,
-					type: FoodTypes.salat,
+					type: FoodTypes.salad,
 					description: "decription 2",
 					weight: 2,
 					amount: 1
@@ -135,7 +135,7 @@ const mockDataFromServer = {
 				{
 					name: "first 1",
 					cost: 2,
-					type: FoodTypes.soup,
+					type: FoodTypes.first,
 					description: "first decription 1",
 					weight: 2,
 					amount: 2
@@ -143,7 +143,7 @@ const mockDataFromServer = {
 				{
 					name: "first 2",
 					cost: 3,
-					type: FoodTypes.soup,
+					type: FoodTypes.first,
 					description: "first decription 2",
 					weight: 3,
 					amount: 1
@@ -156,7 +156,7 @@ const mockDataFromServer = {
 			date: new Date(),
 			foods: [
 				{
-					name: "Цезарь", cost: 35, type: FoodTypes.salat, description: "курица, гренки", weight: 200},
+					name: "Цезарь", cost: 35, type: FoodTypes.salad, description: "курица, гренки", weight: 200},
 				{
 					name: "Пюре",
 					description: "cказано, что тут есть картошка. Еще пишут много других слов, слов, слов, слов, слов, слов, может столько.",
@@ -168,7 +168,7 @@ const mockDataFromServer = {
 				{
 					name: "Гороховый суп",
 					cost: 3,
-					type: FoodTypes.soup,
+					type: FoodTypes.first,
 					description: "cказано, что тут есть горошек. Еще пишут много других слов, слов, слов, слов, слов, слов, может столько.",
 					weight: 3,
 					amount: 1
@@ -181,7 +181,7 @@ const mockDataFromServer = {
 				{
 					name: "Какой-то суп",
 					cost: 3,
-					type: FoodTypes.soup,
+					type: FoodTypes.first,
 					description: "cказано, что это суп. слов, слов, слов, слов, слов, может столько.",
 					weight: 200,
 					amount: 2
@@ -198,7 +198,7 @@ const mockDataFromServer = {
 					date: new Date(),
 					foods: [
 						{
-							name: "Цезарь", cost: 35, type: FoodTypes.salat, description: "курица, гренки", weight: 200},
+							name: "Цезарь", cost: 35, type: FoodTypes.salad, description: "курица, гренки", weight: 200},
 						{
 							name: "Пюре",
 							description: "cказано, что тут есть картошка. Еще пишут много других слов, слов, слов, слов, слов, слов, может столько.",
@@ -210,7 +210,7 @@ const mockDataFromServer = {
 						{
 							name: "Гороховый суп",
 							cost: 3,
-							type: FoodTypes.soup,
+							type: FoodTypes.first,
 							description: "cказано, что тут есть горошек. Еще пишут много других слов, слов, слов, слов, слов, слов, может столько.",
 							weight: 3,
 							amount: 1
@@ -221,7 +221,7 @@ const mockDataFromServer = {
 					date: new Date((new Date()).setDate( (new Date()).getDate() + 1 )),
 					foods: [
 						{
-							name: "Салат", cost: 35, type: FoodTypes.salat, description: "курица, гренки", weight: 200},
+							name: "Салат", cost: 35, type: FoodTypes.salad, description: "курица, гренки", weight: 200},
 						{
 							name: "Пюре",
 							description: "cказано, что тут есть картошка. Еще пишут много других слов, слов, слов, слов, слов, слов, может столько.",
@@ -244,7 +244,7 @@ const mockDataFromServer = {
 					{
 						name: "Какой-то суп",
 						cost: 3,
-						type: FoodTypes.soup,
+						type: FoodTypes.first,
 						description: "cказано, что это суп. слов, слов, слов, слов, слов, может столько.",
 						weight: 200,
 						amount: 2
