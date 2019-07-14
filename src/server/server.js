@@ -193,7 +193,7 @@ const mockDataFromServer = {
 	],
 	allOrders: [
 		{
-			costOnWeek: 50,
+			costOnWeek: 81,
 			name: "User1",
 			order: [
 				{
@@ -238,7 +238,7 @@ const mockDataFromServer = {
 		},
 		{
 			name: "User2",
-			costOnWeek: 3,
+			costOnWeek: 6,
 			order: [
 			{
 				date: new Date((new Date()).setDate( (new Date()).getDate() + 1 )),
