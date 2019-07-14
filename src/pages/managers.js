@@ -7,7 +7,7 @@ import {
 	ScrollView,
 } from 'react-native';
 
-import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components/exportCopmonents";
+import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { FoodService } from "../services/foodService";
 

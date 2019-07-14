@@ -8,7 +8,7 @@ import {
 	AsyncStorage
 } from 'react-native';
 
-import { TouchableButton } from "../components/exportCopmonents";
+import { TouchableButton } from "../components";
 
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { ROUTES } from "../share/routesList";

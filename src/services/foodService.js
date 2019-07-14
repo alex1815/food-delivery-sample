@@ -1,6 +1,6 @@
 import { FoodTypes } from "../models/foodTypes";
 import { Food } from "../models/food";
-import { mapInPreaparingFoodsList, getMonday, getSunday, getCurrentDayInRussia } from "../helpers/helpers";
+import { mapInPreaparingFoodsList, getMonday, getSunday, getCurrentDayInRussia } from "../helpers";
 import { SERVER } from "../server/server";
 
 export class FoodService {

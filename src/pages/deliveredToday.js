@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
 	StyleSheet,
@@ -11,10 +11,10 @@ import {
 
   import { NavigationActions } from 'react-navigation';
 
-import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components/exportCopmonents";
+import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
-import { canChangeOrder, getCurrentDayInRussia } from "../helpers/helpers";
+import { canChangeOrder } from "../helpers";
 
 import { RoleService } from "../services/roleService";
 import { ROUTES } from "../share/routesList";

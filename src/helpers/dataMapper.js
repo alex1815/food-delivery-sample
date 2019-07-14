@@ -35,7 +35,7 @@ export function getMonday(d) {
 		? new Date(d)
 		: d;
 	let day = d.getDay(),
-		diff = d.getDate() - getCurrentDayInRussia(day); // adjust when day is sunday
+		diff = d.getDate() - getCurrentDayInRussia(day);
 	return new Date(d.setDate(diff));
 }
 

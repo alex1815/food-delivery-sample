@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
 	StyleSheet,
@@ -8,12 +8,12 @@ import {
 	ScrollView,
 } from 'react-native';
 
-import { TouchableButton, IncreaseAmount, DecreaseAmount, NextDayButton, BackDayButton, BlockFoodDescription } from "../components/exportCopmonents";
+import { TouchableButton, IncreaseAmount, DecreaseAmount, NextDayButton, BackDayButton, BlockFoodDescription } from "../components";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
-import { findInPreaparingFoodsList } from "../helpers/helpers";
+import { findInPreaparingFoodsList } from "../helpers";
 import { FoodTypes, CurrentOrderItem } from "../models/exportModels";
-import { mapInPreaparingFoodsList, canChangeOrder } from "../helpers/helpers";
+import { mapInPreaparingFoodsList, canChangeOrder } from "../helpers";
 
 const STATE = {
 	LOADING_DATA: "Загрузка данных...",
