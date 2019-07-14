@@ -10,13 +10,13 @@ import {
 import { TouchableButton } from "../components";
 
 import { PAGE_STYLES } from "../share/styles";
-import { ROUTES } from "../share/routesList";
+import { ROUTES } from "../router/routesList";
 
 import { request } from "../server/request";
 import { REQUEST_TYPE } from "../server/requestTypes";
 
 const MESSAGES_ON_BUTTON = {
-    AUTHORIZATION: "LOG IN",
+    AUTHORIZATION: "Log in",
     LOADING_DATA: "Getting data...",
     ERROR: "Login or password are incorrect.",
 }
@@ -33,11 +33,12 @@ export class AuthorizationScreen extends React.Component {
         super(props);
 
         this.state = {
-            // TODO getting name form storage
             name: "",
             messageOnButton: MESSAGES_ON_BUTTON.AUTHORIZATION,
         };
+    }
 
+    componentDidMount() {
         const oldLogin = AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LOGIN);
         if (oldLogin) {
             this.onLogin(oldLogin, AsyncStorage.getItem(ASYNC_STORAGE_KEYS.PASSWORD));

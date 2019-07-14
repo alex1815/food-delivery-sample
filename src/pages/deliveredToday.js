@@ -17,12 +17,12 @@ import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
 import { canChangeOrder, generateListOfDays } from "../helpers";
 
 import { RoleService } from "../services/roleService";
-import { ROUTES } from "../share/routesList";
+import { ROUTES } from "../router/routesList";
 
 const MESSAGE = {
     FOOD_IS_READY: "Food is here!",
     NO_FOOD: "You didn't order food for today",
-    MOVE_TO_ALL_ORDER: "Move to all order",
+    MOVE_TO_ALL_ORDERS: "Move to all orders",
     ORDER_FOR_TODAY: "Order for today",
     ORDER_ON_WEEK_FROM: "Orders on week from",
     ORDER_ON_WEEK_TO: "to",
@@ -88,7 +88,7 @@ export class DeliveredToday extends React.Component {
                                     />
                                     {
                                         isManager && <TouchableButton
-                                            title={ MESSAGE.MOVE_TO_ALL_ORDER }
+                                            title={ MESSAGE.MOVE_TO_ALL_ORDERS }
                                             onPress={ () => this.navigateToAllOrders() }
                                             style={ styles.shiftDown } />
                                     }
@@ -123,13 +123,14 @@ export class DeliveredToday extends React.Component {
     renderListItem({ item }) {
         return (<BlockFoodDescription
             name={ item.name }
+            key={ `${item.name}-${item.description}` }
             description={ item.description }
             amount={ item.amount } />)
     }
 
     renderListOfDays({ item }) {
         const isCanChangeOrder = item.description === DAYS_DESCRIPTION.ORDERED && canChangeOrder(item.date);
-        return (<View>
+        return (<View key={ `${item.name}-${item.description}` }>
             <View style={ [ styles.flex ] }>
 
                 <TouchableHighlight onPress={ () => this.orderFoodOnDay(item) }>
@@ -149,10 +150,10 @@ export class DeliveredToday extends React.Component {
                     />
                 }</View>
             </View>
-            <View>{
+            {
                 this.state.itemForDeleting && this.state.itemForDeleting === item &&
                 <TouchableButton title={ `${ MESSAGE.REMOVE_ORDER_FOR } ${ item.name.toLowerCase() }?` } onPress={ (item) => this.removeOrder(item) } />
-            }</View>
+            }
         </View>);
     }
 

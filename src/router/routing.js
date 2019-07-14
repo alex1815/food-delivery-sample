@@ -3,12 +3,12 @@ import {
   StackNavigator,
 } from "react-navigation";
 
-import { ROUTES } from "../share/routesList";
+import { ROUTES } from "./routesList";
 
-import { DeliveredToday } from "./deliveredToday";
-import { OrderFood } from "./orderFood";
-import { AuthorizationScreen } from "./authoriaztion";
-import { ManagerScreen } from "./managers";
+import { DeliveredToday } from "../pages";
+import { OrderFood } from "../pages";
+import { AuthorizationScreen } from "../pages";
+import { ManagerScreen } from "../pages";
 
 const { DELIVERED_TODAY, ORDER_FOOD, AUTHORIZATION, HOME, MANAGER_SCREEN } = ROUTES;
 
@@ -26,4 +26,6 @@ const stackNavigatorRouting = {
     MANAGER_SCREEN: { screen: ManagerScreen },
 }
 
-export const app = StackNavigator(stackNavigatorRouting);
+const app = StackNavigator(stackNavigatorRouting);
+
+export default app;
