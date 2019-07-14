@@ -6,7 +6,7 @@ export class RoleService {
 		return SERVER.getRole();
 	}
 
-	static async iIsManager () {
+	static async isManager () {
 		return (await RoleService.getRole()) == ROLES.MANAGER;
 	}
 }

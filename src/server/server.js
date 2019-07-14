@@ -21,12 +21,14 @@ export class SERVER {
 
 	static async getMyOrderByDate(date) {
 		//return request(REQUEST_TYPE.get, "getMyOrder/" + date);
-		
-		let myOrderByDate = mockDataFromServer.myOrders.find( (item) => {
-			return item.date.equalDate(date);
-		 });
-
-		return myOrderByDate; 
+        
+        return new Promise( (resolve, reject) => {
+            let myOrderByDate = mockDataFromServer.myOrders.find( (item) => {
+                return item.date.equalDate(date);
+             });
+    
+            resolve(myOrderByDate);
+        });
 	}
 
 	static async getMyOrderOnWeek(firstDay, lastDay) {
@@ -36,7 +38,7 @@ export class SERVER {
 		});
 	}
 
-	static foodsReady() {
+	static async foodsReady() {
 		// todo send message to server that foods bring
 	}
 

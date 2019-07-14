@@ -40,7 +40,7 @@ export class FoodService {
 		return !!result;
 	}
 
-	static foodsReady() {
+	static async foodsReady() {
 		 return SERVER.foodsReady();
 	}
 

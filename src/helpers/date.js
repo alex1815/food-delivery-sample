@@ -31,3 +31,29 @@ export function getSunday(d) {
 		diff = d.getDate() + (6 - getCurrentDayInRussia(day));
 	return new Date(d.setDate(diff));
 }
+
+// can be changed to name of days on any language, on Russian for example
+export const NAMES_OF_DAYS = [
+	// "Понедельник",
+	// "Вторник",
+	// "Среда",
+	// "Четверг",
+    // "Пятница"
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+];
+
+export function generateListOfDays(firstDay) {
+    return NAMES_OF_DAYS.map((name, i) => {
+        return ({
+            day: i,
+            name,
+            date: (new Date()).setDate(firstDay.getDate() + i),
+        });
+    });
+}

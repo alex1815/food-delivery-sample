@@ -12,7 +12,7 @@ const PAGE = {
     width: "100%",
 }
 
-export const  PAGE_STYLES = StyleSheet.create({
+export const PAGE_STYLES = StyleSheet.create({
     page: PAGE,
     pageWithScrool: {
         ...PAGE, 

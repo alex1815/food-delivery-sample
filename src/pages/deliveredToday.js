@@ -1,241 +1,225 @@
 import React from "react";
 
 import {
-	StyleSheet,
-	Text,
-	View,
-	FlatList,
-	ScrollView,
-	TouchableHighlight,
-  } from "react-native";
+    StyleSheet,
+    Text,
+    View,
+    FlatList,
+    ScrollView,
+    TouchableHighlight,
+} from "react-native";
 
-  import { NavigationActions } from "react-navigation";
+import { NavigationActions } from "react-navigation";
 
 import { BlockFoodDescription, TouchableButton, FlexBlock } from "../components";
 import { FoodService } from "../services/foodService";
 import { PAGE_STYLES, TEXT_STYLES } from "../share/styles";
-import { canChangeOrder } from "../helpers";
+import { canChangeOrder, generateListOfDays } from "../helpers";
 
 import { RoleService } from "../services/roleService";
 import { ROUTES } from "../share/routesList";
 
 const MESSAGE = {
-	FOOD_READY: "Еду принесли!",
-	NO_FOOD: "Вы не заказывали еду на сегодня",
+    FOOD_IS_READY: "Food is here!",
+    NO_FOOD: "You didn't order food for today",
+    MOVE_TO_ALL_ORDER: "Move to all order",
+    ORDER_FOR_TODAY: "Order for today",
+    ORDER_ON_WEEK_FROM: "Orders on week from",
+    ORDER_ON_WEEK_TO: "to",
+    SUM_FOR_PAY: "Bill",
+    LOADING: "Loading...",
+    REMOVE_ORDER_FOR: "Remove order for"
 }
 
-const LIST_OF_DAYS = [];
+const TAB_TITLE = "Order for today";
+
 const MONDAY = FoodService.getMondayForOrder();
+const LIST_OF_DAYS = generateListOfDays(MONDAY);
 
-const NAMES_OF_DAYS = [
-	"Понедельник",
-	"Вторник",
-	"Среда",
-	"Четверг",
-	"Пятница"
-]
-
-const DESCRIPTION_OF_DAYS = {
-	ORDERED: "Редактировать заказ",
-	NEW_ORDER: "Заказать",
+const DAYS_DESCRIPTION = {
+    ORDERED: "Change order",
+    NEWORDER: "Order",
 }
 
 export class DeliveredToday extends React.Component {
-	static navigationOptions = {
-		title: "Заказ на сегодня"
-	}
+    static navigationOptions = {
+        title: TAB_TITLE
+    }
 
-	constructor(props){
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this._foodReady = this._foodReady.bind(this);
-		this._removeOrder = this._removeOrder.bind(this);
-		this._renderListOfDays = this._renderListOfDays.bind(this);
-		this._renderListItem = this._renderListItem.bind(this);
-		this._orderFoodOnDay = this._orderFoodOnDay.bind(this);
-		this._navigateToAllOrders = this._navigateToAllOrders.bind(this);
+        this.listOfDays = [];
+        this.state = {
+            foodsToday: [],
+            isReady: false,
+            isLoaded: false,
+            currentSumOnWeek: 0,
+            itemForDeleting: null,
+            isManager: false,
+        };
+    }
 
-		this.listOfDays = [];
-		generateListOfDays();
-		this.state = {
-			foodsToday: [],
-			ready: false,
-			loaded: false,
-			currentSumOnWeek: 0,
-			itemForDeleting: null,
-			isManager: false,
-		};
-	}
+    async componentDidMount() {
+        const foodsToday = await FoodService.getMyOrderByDate(new Date());
+        this.listOfDays = await this.getListOfDays();
+        const currentSumOnWeek = await FoodService.getMySumOfOrderOnWeek();
+        const isManager = await RoleService.isManager();
 
-	async componentDidMount() {
-		const foodsToday = await FoodService.getMyOrderByDate(new Date());
-		this.listOfDays = await this._getListOfDays();
-		const currentSumOnWeek = await FoodService.getMySumOfOrderOnWeek();
-		const isManager = await RoleService.iIsManager();
+        this.setState({ foodsToday, currentSumOnWeek, isManager },
+            () => this.setState({ isLoaded: true })
+        );
+    }
 
-		this.setState({ foodsToday, currentSumOnWeek, isManager },
-			() => this.setState({ loaded: true })
-		);
-	}
-		
-	render() {
-		return (
-			<View style={[PAGE_STYLES.pageWithScrool]}>
-				<ScrollView style={[PAGE_STYLES.scrollForPageWithScroll]}>
-				{ this.state.loaded
-				? <View>{
-						this.state.foodsToday && this.state.foodsToday.length > 0
-						? <View>
-								<Text style={[TEXT_STYLES.header]}>Заказ на сегодня:</Text>
-								<FlatList
-									data={ this.state.foodsToday }
-									renderItem={ this._renderListItem }
-									extraData={this.state}
-								/>
-								{
-									this.state.isManager
-										?<TouchableButton
-										title={"Перейти ко всем заказам"}
-										onPress={this._navigateToAllOrders}
-										style={styles.shiftDown} />
-									: null
-								}
-								<View style={styles.shiftDown}>{
-									this.state.ready
-									? <Text style={[TEXT_STYLES.header]}>{ MESSAGE.FOOD_READY }</Text>
-									: <TouchableButton onPress={this._foodReady} title={ MESSAGE.FOOD_READY }/>
-								}</View>
+    render() {
+        const { isLoaded, foodsToday, isManager, isReady, currentSumOnWeek } = this.state;
+        return (
+            <View style={ [ PAGE_STYLES.pageWithScrool ] }>
+                <ScrollView style={ [ PAGE_STYLES.scrollForPageWithScroll ] }>
+                    { isLoaded
+                        ? <View>{
+                            foodsToday && foodsToday.length > 0
+                                ? <View>
+                                    <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.ORDER_FOR_TODAY }</Text>
+                                    <FlatList
+                                        data={ foodsToday }
+                                        renderItem={ (item) => this.renderListItem(item) }
+                                        extraData={ this.state }
+                                    />
+                                    {
+                                        isManager && <TouchableButton
+                                            title={ MESSAGE.MOVE_TO_ALL_ORDER }
+                                            onPress={ () => this.navigateToAllOrders() }
+                                            style={ styles.shiftDown } />
+                                    }
+                                    <View style={ styles.shiftDown }>{
+                                        isReady
+                                            ? <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.FOOD_IS_READY }</Text>
+                                            : <TouchableButton onPress={ () => this.foodIsReady() } title={ MESSAGE.FOOD_IS_READY } />
+                                    }</View>
 
-								<Text style={[TEXT_STYLES.header, styles.shiftDown]}>{`Заказ на неделю с ${MONDAY.getDate()} по ${FoodService.getSundayForOrder().getDate()}:`}</Text>
-								<FlatList
-									data={ this.listOfDays }
-									renderItem={ this._renderListOfDays }
-									extraData={this.state}
-								/>
+                                    <Text style={ [ TEXT_STYLES.header, styles.shiftDown ] }>
+                                        { `${ MESSAGE.ORDER_ON_WEEK_FROM } ${ MONDAY.getDate() } ${ MESSAGE.ORDER_ON_WEEK_TO } ${ FoodService.getSundayForOrder().getDate() }:` }
+                                    </Text>
+                                    <FlatList
+                                        data={ this.listOfDays }
+                                        renderItem={ (item) => this.renderListOfDays(item) }
+                                        extraData={ this.state }
+                                    />
 
-								<View>
-									<Text style={[TEXT_STYLES.subHeader, styles.shiftDown]}>{`Сумма к оплате за неделю: ${this.state.currentSumOnWeek}р.`}</Text>
-								</View>
-						</View>
-						: <Text style={[TEXT_STYLES.header]}>{ MESSAGE.NO_FOOD }</Text>
-					}</View>
-				: <Text style={[TEXT_STYLES.header]}>Загрузка...</Text>
-				}
-				</ScrollView>
-			</View>
-		);
-	}
+                                    <View>
+                                        <Text style={ [ TEXT_STYLES.subHeader, styles.shiftDown ] }>{ `${ MESSAGE.SUM_FOR_PAY } : ${ currentSumOnWeek }р.` }</Text>
+                                    </View>
+                                </View>
+                                : <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.NO_FOOD }</Text>
+                        }</View>
+                        : <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.LOADING }</Text>
+                    }
+                </ScrollView>
+            </View>
+        );
+    }
 
-	_renderListItem({item}) {
-		return ( <BlockFoodDescription 
-			name={item.name}
-			description={item.description}
-			amount={item.amount} />)
-	}
+    renderListItem({ item }) {
+        return (<BlockFoodDescription
+            name={ item.name }
+            description={ item.description }
+            amount={ item.amount } />)
+    }
 
-	_renderListOfDays({item}) {
-		const CAN_CHANGE_ORDER = item.description === DESCRIPTION_OF_DAYS.ORDERED 
-								 && canChangeOrder(item.date);
-		return (<View>
-					<View style={[styles.flex]}>
-					
-						<TouchableHighlight onPress={()=>this._orderFoodOnDay(item)}>
-							<View>
-								<FlexBlock name={item.name} 
-									description={item.description} 
-									blockWidth={CAN_CHANGE_ORDER ? styles.blockWithButton : styles.blockWithoutButton }
-									/>
-							</View>
-						</TouchableHighlight>
+    renderListOfDays({ item }) {
+        const isCanChangeOrder = item.description === DAYS_DESCRIPTION.ORDERED && canChangeOrder(item.date);
+        return (<View>
+            <View style={ [ styles.flex ] }>
 
-						<View>{
-							CAN_CHANGE_ORDER
-							? <TouchableButton
-									title={"X"}
-									onPress={()=>this._showAcceptionOfDeleting(item)}
-									style={styles.removeButton} 
-									/>
-							: null
-						}</View>
-					</View>
-					<View>{
-							this.state.itemForDeleting && this.state.itemForDeleting === item
-							? <TouchableButton title={`Удалить заказ на ${item.name.toLowerCase()}?`} onPress={this._removeOrder}/>
-							: null
-					}</View>
-				</View>);
-	}
+                <TouchableHighlight onPress={ () => this.orderFoodOnDay(item) }>
+                    <View>
+                        <FlexBlock name={ item.name }
+                            description={ item.description }
+                            blockWidth={ isCanChangeOrder ? styles.blockWithButton : styles.blockWithoutButton }
+                        />
+                    </View>
+                </TouchableHighlight>
 
-	_foodReady() {
-		FoodService.foodsReady();
-		this.setState({ ready: true });
-	}
+                <View>{
+                    isCanChangeOrder && <TouchableButton
+                        title={ "x" }
+                        onPress={ () => this.setItemForDeleting(item) }
+                        style={ styles.removeButton }
+                    />
+                }</View>
+            </View>
+            <View>{
+                this.state.itemForDeleting && this.state.itemForDeleting === item &&
+                <TouchableButton title={ `${ MESSAGE.REMOVE_ORDER_FOR } ${ item.name.toLowerCase() }?` } onPress={ (item) => this.removeOrder(item) } />
+            }</View>
+        </View>);
+    }
 
-	async _getListOfDays() {
-		const foodsOnWeek = await FoodService.getMyOrderOnWeek();
-		const res = [];
-		LIST_OF_DAYS.map( (day) => {
-			const isFound = foodsOnWeek.find( (dateAndFood) => {
-				return dateAndFood.date.getDay() === day.day;
-			});
-			// TODO - check what orfers from server have a same start day (monday)
-			res.push({ name: day.name, description: isFound ? DESCRIPTION_OF_DAYS.ORDERED : DESCRIPTION_OF_DAYS.NEW_ORDER, date: new Date(day.date) });
-		});
+    async foodIsReady() {
+        await FoodService.foodsReady();
+        this.setState({ isReady: true });
+    }
 
-		return res;
-	}
+    async getListOfDays() {
+        const foodsOnWeek = await FoodService.getMyOrderOnWeek();
+        const res = [];
+        LIST_OF_DAYS.map(({ day, name, date }) => {
+            const isFound = foodsOnWeek.find((dateAndFood) => {
+                return dateAndFood.date.getDay() === day;
+            });
+            // TODO - check what orfers from server have same first day of week (monday)
+            res.push({
+                name,
+                description: isFound ? DAYS_DESCRIPTION.ORDERED : DAYS_DESCRIPTION.NEWORDER,
+                date: new Date(date)
+            });
+        });
 
-	_showAcceptionOfDeleting(itemForDeleting) {
-		this.state.itemForDeleting === itemForDeleting
-		? this.setState({ itemForDeleting : null })
-		: this.setState({ itemForDeleting });
-	}
+        return res;
+    }
 
-	_removeOrder(item) {
-		FoodService.cancelOrder(this.state.itemForDeleting.date)
-			.then( () => {
-				this.setState({itemForDeleting: null});
-			});
-	}
+    setItemForDeleting(itemForDeleting) {
+        this.state.itemForDeleting === itemForDeleting
+            ? this.setState({ itemForDeleting: null })
+            : this.setState({ itemForDeleting });
+    }
 
-	_orderFoodOnDay(item) {
-		const navigateAction = NavigationActions.navigate({
-			routeName: ROUTES.ORDER_FOOD,
-			params: { date: (new Date(item.date.getTime())) },
-		});
+    removeOrder() {
+        FoodService.cancelOrder(this.state.itemForDeleting.date)
+            .then(() => {
+                this.setState({ itemForDeleting: null });
+            });
+    }
 
-		this.props.navigation.dispatch(navigateAction);
-	}
+    orderFoodOnDay(item) {
+        const navigateAction = NavigationActions.navigate({
+            routeName: ROUTES.ORDER_FOOD,
+            params: { date: (new Date(item.date.getTime())) },
+        });
 
-	_navigateToAllOrders() {
-		this.props.navigation.navigate(ROUTES.MANAGER_SCREEN);
-	}
+        this.props.navigation.dispatch(navigateAction);
+    }
+
+    navigateToAllOrders() {
+        this.props.navigation.navigate(ROUTES.MANAGER_SCREEN);
+    }
 }
 
 const styles = StyleSheet.create({
-	flex: {
-		display: "flex",
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	shiftDown: {
-		paddingTop: 15
-	},
-	blockWithButton: {
-		width: "90%",
-	},
-	blockWithoutButton: {
-		width: "100%",
-	},
+    flex: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    shiftDown: {
+        paddingTop: 15
+    },
+    blockWithButton: {
+        width: "90%",
+    },
+    blockWithoutButton: {
+        width: "98%",
+    },
 });
-
-function generateListOfDays() {
-	NAMES_OF_DAYS.map( (name, i) => {
-		LIST_OF_DAYS.push({
-			day: i,
-			name,
-			date: (new Date()).setDate(MONDAY.getDate() + i),
-		});
-	});
-}
