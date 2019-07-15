@@ -53,7 +53,7 @@ export class SERVER {
     static getSumOfOrderOnWeek() {
         //return request(REQUEST_TYPE.get, "getSumOfOrderOnWeek");
         return new Promise((resolve, reject) => {
-            resolve(100);
+            resolve(51);
         });
     }
 
@@ -91,7 +91,8 @@ const mockDataFromServer = {
                     cost: 35,
                     type: FoodTypes.salad,
                     description: "chicken, salad",
-                    weight: 200
+                    weight: 200,
+                    amount: 1
                 },
                 {
                     name: "Salad 1",
@@ -107,14 +108,14 @@ const mockDataFromServer = {
                     type: FoodTypes.salad,
                     description: "decription 2",
                     weight: 2,
-                    amount: 1
+                    amount: 0
                 },
                 {
                     name: "Second 1",
                     cost: 2,
                     type: FoodTypes.second,
                     weight: 2,
-                    amount: 2
+                    amount: 0
                 },
                 {
                     name: "First 2",
@@ -123,6 +124,22 @@ const mockDataFromServer = {
                     description: "first decription 2",
                     weight: 3,
                     amount: 0
+                },
+                {
+                    name: "Potatoes",
+                    description: "potatoes with butter",
+                    cost: 2,
+                    type: FoodTypes.second,
+                    weight: 2,
+                    amount: 2,
+                },
+                {
+                    name: "Soup 1",
+                    cost: 3,
+                    type: FoodTypes.first,
+                    description: "it has some description",
+                    weight: 3,
+                    amount: 1
                 },
             ]
         },
@@ -181,7 +198,8 @@ const mockDataFromServer = {
                     cost: 35,
                     type: FoodTypes.salad,
                     description: "chicken, salad",
-                    weight: 200
+                    weight: 200,
+                    amount: 1
                 },
                 {
                     name: "Potatoes",
@@ -198,7 +216,7 @@ const mockDataFromServer = {
                     description: "it has some description",
                     weight: 3,
                     amount: 1
-                },
+                }
             ]
         },
         {
@@ -218,7 +236,7 @@ const mockDataFromServer = {
     allOrders: [
         {
             costOnWeek: 81,
-            name: "User1",
+            name: "User 1",
             order: [
                 {
                     date: new Date(),
@@ -228,7 +246,8 @@ const mockDataFromServer = {
                             cost: 35,
                             type: FoodTypes.salad,
                             description: "chicken, salad",
-                            weight: 200
+                            weight: 200,
+                            amount: 1
                         },
                         {
                             name: "Potatoes",
@@ -256,7 +275,8 @@ const mockDataFromServer = {
                             cost: 35,
                             type: FoodTypes.salad,
                             description: "chicken, salad",
-                            weight: 200
+                            weight: 200,
+                            amount: 2
                         },
                         {
                             name: "Potatoes",
@@ -271,7 +291,7 @@ const mockDataFromServer = {
             ]
         },
         {
-            name: "User2",
+            name: "User 2",
             costOnWeek: 6,
             order: [
                 {
