@@ -18,11 +18,12 @@ tabNavigatorRoutes[ ORDER_FOOD ] = { screen: OrderFood };
 
 const TabNavigatorSceen = new TabNavigator(tabNavigatorRoutes);
 
-const stackNavigatorRouting = {};
-stackNavigatorRouting[ HOME ] = { screen: AuthorizationScreen };
-stackNavigatorRouting[ TABS ] = { screen: TabNavigatorSceen };
-stackNavigatorRouting[ AUTHORIZATION ] = { screen: AuthorizationScreen };
-stackNavigatorRouting[ MANAGER_SCREEN ] = { screen: ManagerScreen };
+const stackNavigatorRouting = {
+    [ HOME ]: { screen: AuthorizationScreen },
+    [ TABS ] : { screen: TabNavigatorSceen },
+    [ AUTHORIZATION ] : { screen: AuthorizationScreen },
+    [ MANAGER_SCREEN ] : { screen: ManagerScreen }
+};
 
 const app = StackNavigator(stackNavigatorRouting);
 

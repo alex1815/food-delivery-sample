@@ -20,7 +20,7 @@ export class SERVER {
         //return request(REQUEST_TYPE.get, "getMenu/" + date);
 
         const foodsByDate = mockDataFromServer.data.find((item) => {
-            return item.date.equalDate(date);
+            return item.date.equalDates(date);
         });
 
         return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ export class SERVER {
     static async getMyOrderByDate(date) {
         //return request(REQUEST_TYPE.get, "getMyOrder/" + date);
         const myOrderByDate = mockDataFromServer.myOrders.find((item) => {
-            return item.date.equalDate(date);
+            return item.date.equalDates(date);
         });
 
         return new Promise((resolve, reject) => {

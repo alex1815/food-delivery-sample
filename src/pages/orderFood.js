@@ -46,9 +46,14 @@ export class OrderFood extends React.Component {
             foods: [],
             date: new Date(),
             changed: false,
-            currentOrder: [],
+            currentOrders: [],
             currentSum: 0,
         };
+
+        this.setNewDate = this.setNewDate.bind(this);
+        this.renderListFoods = this.renderListFoods.bind(this);
+        this.renderSectionHeader = this.renderSectionHeader.bind(this);
+        this.orderFood = this.orderFood.bind(this);
     }
 
     componentDidMount() {
@@ -63,7 +68,28 @@ export class OrderFood extends React.Component {
     }
 
     render() {
-        const { date, message, foods, currentOrder, currentSum } = this.state;
+        const { date, message, foods, currentOrders, currentSum } = this.state;
+
+        const currentOrdersView = currentOrders.length > 0
+            ? <View style={ styles.paddingBottom }>
+                <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CURRENT_ORDER }</Text>
+                <Text style={ [ TEXT_STYLES.header, styles.paddingLeft ] }>
+                    { currentOrders.map(({ name, amount }) => `${ name }(${ amount })`).join(", ") }
+                </Text>
+                <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.PRICE }</Text>
+                <Text style={ [ TEXT_STYLES.header, styles.paddingLeft ] }>{ `${ currentSum }р.` }</Text>
+            </View>
+            : null;
+
+        const foodsForOrder = this.showButtonsForChangingAmount()
+            ? <View>
+                <SectionList
+                    renderItem={ this.renderListFoods }
+                    renderSectionHeader={ this.renderSectionHeader }
+                    sections={ foods } />
+                <TouchableButton style={ [ styles.marginTop10 ] } onPress={ this.orderFood } title={ MESSAGE.SEND_ORDER } />
+            </View>
+            : null;
 
         return (
             <View style={ [ PAGE_STYLES.pageWithScrool ] }>
@@ -71,38 +97,19 @@ export class OrderFood extends React.Component {
                     <View style={ [ styles.row, styles.elementsByCenter ] }>
                         <BackDayButton
                             date={ date }
-                            setNewDate={ (newDateMS) => this.setNewDate(newDateMS) } />
+                            setNewDate={ this.setNewDate } />
                         <Text style={ [ TEXT_STYLES.header ] }>{ date.toDateString() }</Text>
                         <NextDayButton
                             date={ date }
-                            setNewDate={ (newDateMS) => this.setNewDate(newDateMS) } />
+                            setNewDate={ this.setNewDate } />
                     </View>
                     <View style={ [ styles.marginTop10 ] }>{
                         message === STATE.DONE
                             ? <View>{
                                 foods.length > 0
                                     ? <View>
-                                        {
-                                            currentOrder.length > 0 &&
-                                            <View style={ styles.paddingBottom }>
-                                                <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CURRENT_ORDER }</Text>
-                                                <Text style={ [ TEXT_STYLES.header, styles.paddingLeft ] }>
-                                                    { currentOrder.map(({ name, amount }) => `${ name }(${ amount })`).join(", ") }
-                                                </Text>
-                                                <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.PRICE }</Text>
-                                                <Text style={ [ TEXT_STYLES.header, styles.paddingLeft ] }>{ `${ currentSum }р.` }</Text>
-                                            </View>
-                                        }
-                                        <View>{
-                                            this.showButtonsForChangingAmount() &&
-                                            <View>
-                                                <SectionList
-                                                    renderItem={ (internalItem) => this.renderListItem(internalItem) }
-                                                    renderSectionHeader={ (internalSection) => this.renderSectionHeader(internalSection) }
-                                                    sections={ foods } />
-                                                <TouchableButton style={ [ styles.marginTop10 ] } onPress={ () => this.orderFood() } title={ MESSAGE.SEND_ORDER } />
-                                            </View>
-                                        }</View>
+                                        { currentOrdersView }
+                                        { foodsForOrder }
                                     </View>
                                     : <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CAN_NOT_ORDER }</Text>
                             }</View>
@@ -117,7 +124,7 @@ export class OrderFood extends React.Component {
         return <Text style={ [ TEXT_STYLES.subHeader ] }> { `${ section.title }:` } </Text>;
     }
 
-    renderListItem({ item }) {
+    renderListFoods({ item }) {
         const { name, description, cost, amount } = item;
         return <View style={ [ styles.row, styles.listItem ] }>
             <BlockFoodDescription
@@ -244,7 +251,7 @@ export class OrderFood extends React.Component {
 
     changeAmountIntoCurrentOrder(item, changeAmountFunc) {
         const foundIndexOfItem = this.findIntoCurrentOrder(item);
-        const updatedCurrentOrder = this.state.currentOrder.slice();
+        const updatedCurrentOrder = this.state.currentOrders.slice();
 
         if (foundIndexOfItem > -1) {
             let foundItem = updatedCurrentOrder[ foundIndexOfItem ];
@@ -257,7 +264,7 @@ export class OrderFood extends React.Component {
     }
 
     findIntoCurrentOrder(item) {
-        return this.state.currentOrder.findIndex(({ name }) => name === item.name);
+        return this.state.currentOrders.findIndex(({ name }) => name === item.name);
     }
 
     generateCurrentOrder(newOrder) {

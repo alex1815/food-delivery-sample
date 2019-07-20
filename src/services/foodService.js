@@ -78,6 +78,6 @@ export class FoodService {
     }
 }
 
-Date.prototype.equalDate = function (date) {
+Date.prototype.equalDates = function (date) {
     return date && this.getDate() === date.getDate() && this.getMonth() === date.getMonth() && this.getFullYear() === date.getFullYear();
 }
