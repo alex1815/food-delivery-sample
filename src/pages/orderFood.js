@@ -16,7 +16,7 @@ import { mapInPreparedFoodsList, canChangeOrder } from "../helpers";
 
 const STATE = {
     LOADING_DATA: "Loading...",
-    LOADING_ORDER: "Sending order",
+    LOADING_ORDER: "Sending order...",
     LOADED_ORDER_SUCCESS: "Order was successfully sent!",
     LOADING_ORDER_ERROR: "Error during sending. Please try again.",
     DONE: ""
@@ -54,6 +54,7 @@ export class OrderFood extends React.Component {
         this.renderListFoods = this.renderListFoods.bind(this);
         this.renderSectionHeader = this.renderSectionHeader.bind(this);
         this.orderFood = this.orderFood.bind(this);
+        this.showButtonsForChangingAmount = this.showButtonsForChangingAmount.bind(this);
     }
 
     componentDidMount() {
@@ -70,6 +71,7 @@ export class OrderFood extends React.Component {
     render() {
         const { date, message, foods, currentOrders, currentSum } = this.state;
 
+        // can use memoization here (check preporty manualy and they are same - return saved copy) - slighty improve performance
         const currentOrdersView = currentOrders.length > 0
             ? <View style={ styles.paddingBottom }>
                 <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CURRENT_ORDER }</Text>
@@ -108,8 +110,12 @@ export class OrderFood extends React.Component {
                             ? <View>{
                                 foods.length > 0
                                     ? <View>
-                                        { currentOrdersView }
-                                        { foodsForOrder }
+                                        <View>
+                                            { currentOrdersView }
+                                        </View>
+                                        <View>
+                                            { foodsForOrder }
+                                        </View>
                                     </View>
                                     : <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.CAN_NOT_ORDER }</Text>
                             }</View>
@@ -260,7 +266,7 @@ export class OrderFood extends React.Component {
             changeAmountFunc(null, foundIndexOfItem, updatedCurrentOrder);
         }
 
-        this.setState({ currentOrder: updatedCurrentOrder });
+        this.setState({ currentOrders: updatedCurrentOrder });
     }
 
     findIntoCurrentOrder(item) {
@@ -278,7 +284,7 @@ export class OrderFood extends React.Component {
         };
 
         mapInPreparedFoodsList(newOrder, getItems);
-        this.setState({ currentOrder: newCurrentOrder, currentSum });
+        this.setState({ currentOrders: newCurrentOrder, currentSum });
     }
 
     showButtonsForChangingAmount() {

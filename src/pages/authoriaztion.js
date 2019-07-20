@@ -84,7 +84,7 @@ export class AuthorizationScreen extends React.Component {
         this.setState({ password });
     }
 
-    onLogin(login, password) {
+    onLogin() {
         const { login, password } = this.state;
         if (this.state.messageOnButton === MESSAGES_ON_BUTTON.LOADING_DATA) {
             return;

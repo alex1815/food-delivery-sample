@@ -14,7 +14,7 @@ class ChangeDayButton extends React.PureComponent {
     }
 
     render() {
-        return <TouchableButton onPress={ calculateNextDate } title={ this.props.title } />
+        return <TouchableButton onPress={ this.calculateNextDate } title={ this.props.title } />
     }
 }
 

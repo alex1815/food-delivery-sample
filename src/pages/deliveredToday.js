@@ -58,6 +58,11 @@ export class DeliveredToday extends React.Component {
             itemForDeleting: null,
             isManager: false,
         };
+
+        this.renderListItemForTodayOrders = this.renderListItemForTodayOrders.bind(this);
+        this.renderListOfDays = this.renderListOfDays.bind(this);
+        this.navigateToAllOrders = this.navigateToAllOrders.bind(this);
+        this.foodIsReady = this.foodIsReady.bind(this);
     }
 
     async componentDidMount() {
@@ -69,11 +74,6 @@ export class DeliveredToday extends React.Component {
         this.setState({ foodsToday, currentSumOnWeek, isManager },
             () => this.setState({ isLoaded: true })
         );
-
-        this.renderListItemForTodayOrders = this.renderListItemForTodayOrders.bind(this);
-        this.navigateToAllOrders = this.navigateToAllOrders.bind(this);
-        this.foodIsReady = this.foodIsReady.bind(this);
-        this.renderListOfDays = this.renderListOfDays.bind(this);
     }
 
     render() {
