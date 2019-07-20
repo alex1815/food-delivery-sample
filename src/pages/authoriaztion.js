@@ -33,15 +33,19 @@ export class AuthorizationScreen extends React.Component {
         super(props);
 
         this.state = {
-            name: "",
+            login: "",
             messageOnButton: MESSAGES_ON_BUTTON.AUTHORIZATION,
         };
+
+        this.onLogin = this.onLogin.bind(this);
+        this.onChangeLogin = this.onChangeLogin.bind(this);
+        this.onChangePassword = this.onChangePassword.bind(this);
     }
 
     componentDidMount() {
-        const oldLogin = AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LOGIN);
-        if (oldLogin) {
-            this.onLogin(oldLogin, AsyncStorage.getItem(ASYNC_STORAGE_KEYS.PASSWORD));
+        const existingLogin = AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LOGIN);
+        if (existingLogin) {
+            this.onLogin(existingLogin, AsyncStorage.getItem(ASYNC_STORAGE_KEYS.PASSWORD));
         }
     }
 
@@ -50,29 +54,29 @@ export class AuthorizationScreen extends React.Component {
             <View style={ [ styles.container, PAGE_STYLES.page ] }>
                 <View>
                     {
-                        this.state.name
-                            ? <Text style={ styles.title } >{ `Hi, ${ this.state.name }!` }</Text>
+                        this.state.login
+                            ? <Text style={ styles.title } >{ `Hi, ${ this.state.login }!` }</Text>
                             : <View style={ styles.row }>
                                 <Text style={ styles.title }>{ "Hi! Please log in" }</Text>
                             </View>
                     }
                 </View>
 
-                <Text>Name</Text>
-                <TextInput onChangeText={ (value) => this.onChangeName(value) } />
+                <Text>Login</Text>
+                <TextInput onChangeText={ this.onChangeLogin } />
 
                 <Text>Password</Text>
-                <TextInput onChangeText={ (value) => this.onChangePassword(value) } />
+                <TextInput onChangeText={ this.onChangePassword } />
 
                 <TouchableButton
-                    onPress={ () => this.onLogin(this.state.name, this.state.password) }
+                    onPress={ this.onLogin }
                     title={ this.state.messageOnButton }
                     style={ styles.button } />
             </View>
         );
     }
 
-    onChangeName(name) {
+    onChangeLogin(name) {
         this.setState({ name });
     }
 
@@ -81,6 +85,7 @@ export class AuthorizationScreen extends React.Component {
     }
 
     onLogin(login, password) {
+        const { login, password } = this.state;
         if (this.state.messageOnButton === MESSAGES_ON_BUTTON.LOADING_DATA) {
             return;
         }

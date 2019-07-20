@@ -69,10 +69,16 @@ export class DeliveredToday extends React.Component {
         this.setState({ foodsToday, currentSumOnWeek, isManager },
             () => this.setState({ isLoaded: true })
         );
+
+        this.renderListItemForTodayOrders = this.renderListItemForTodayOrders.bind(this);
+        this.navigateToAllOrders = this.navigateToAllOrders.bind(this);
+        this.foodIsReady = this.foodIsReady.bind(this);
+        this.renderListOfDays = this.renderListOfDays.bind(this);
     }
 
     render() {
         const { isLoaded, foodsToday, isManager, isReady, currentSumOnWeek } = this.state;
+        const sundayDate = FoodService.getSundayForOrder().getDate();
         return (
             <View style={ [ PAGE_STYLES.pageWithScrool ] }>
                 <ScrollView style={ [ PAGE_STYLES.scrollForPageWithScroll ] }>
@@ -83,27 +89,27 @@ export class DeliveredToday extends React.Component {
                                     <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.ORDER_FOR_TODAY }</Text>
                                     <FlatList
                                         data={ foodsToday }
-                                        renderItem={ (item) => this.renderListItem(item) }
+                                        renderItem={ this.renderListItemForTodayOrders }
                                         extraData={ this.state }
                                     />
                                     {
                                         isManager && <TouchableButton
                                             title={ MESSAGE.MOVE_TO_ALL_ORDERS }
-                                            onPress={ () => this.navigateToAllOrders() }
+                                            onPress={ this.navigateToAllOrders }
                                             style={ styles.shiftDown } />
                                     }
                                     <View style={ styles.shiftDown }>{
                                         isReady
                                             ? <Text style={ [ TEXT_STYLES.header ] }>{ MESSAGE.FOOD_IS_READY }</Text>
-                                            : <TouchableButton onPress={ () => this.foodIsReady() } title={ MESSAGE.FOOD_IS_READY } />
+                                            : <TouchableButton onPress={ this.foodIsReady } title={ MESSAGE.FOOD_IS_READY } />
                                     }</View>
 
                                     <Text style={ [ TEXT_STYLES.header, styles.shiftDown ] }>
-                                        { `${ MESSAGE.ORDER_ON_WEEK_FROM } ${ MONDAY.getDate() } ${ MESSAGE.ORDER_ON_WEEK_TO } ${ FoodService.getSundayForOrder().getDate() }:` }
+                                        { `${ MESSAGE.ORDER_ON_WEEK_FROM } ${ MONDAY.getDate() } ${ MESSAGE.ORDER_ON_WEEK_TO } ${ sundayDate }:` }
                                     </Text>
                                     <FlatList
                                         data={ this.listOfDays }
-                                        renderItem={ (item) => this.renderListOfDays(item) }
+                                        renderItem={ this.renderListOfDays }
                                         extraData={ this.state }
                                     />
 
@@ -120,7 +126,7 @@ export class DeliveredToday extends React.Component {
         );
     }
 
-    renderListItem({ item }) {
+    renderListItemForTodayOrders({ item }) {
         return (<BlockFoodDescription
             key={ item.name }
             name={ item.name }
