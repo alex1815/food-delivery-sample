@@ -5,3 +5,6 @@ The goal of project is getting knowledge of React Native. It's not about React o
 If you're looking additional information, please contact with me.
 
 ![Behaviour](assets/readmeImages/food_delivery_sample.gif)
+
+Errors:
+If you have issues during launching app on emulator, but build was succesful - try launch app on device, it should work. Otherwise pls ping me.
