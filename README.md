@@ -7,4 +7,4 @@ If you're looking additional information, please contact with me.
 ![Behaviour](assets/readmeImages/food_delivery_sample.gif)
 
 Errors:
-If you have issues during launching app on emulator, but build was succesful - try launch app on device, it should work. Otherwise pls ping me.
+If you have issues during launching app on emulator, but build was succesful - try launch app on device, it should works. Otherwise pls ping me.
